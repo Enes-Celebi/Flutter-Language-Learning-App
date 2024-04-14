@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "568524708573",
+    "project_id": "lingoengineer-6f316",
+    "storage_bucket": "lingoengineer-6f316.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:568524708573:android:c0c250ec9722e7bad7d934",
+        "android_client_info": {
+          "package_name": "com.example.lingoneer_beta_0_0_1"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCpwHFAGiNrkuL1Lt3QB_aZEG6n8kNODSs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
