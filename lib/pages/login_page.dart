@@ -93,7 +93,7 @@ class _LoginPageState extends State<LoginPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  "Not a member?",
+                  "Not a member??",
                   style: TextStyle(
                     color: Theme.of(context).colorScheme.inversePrimary,
                   ),
