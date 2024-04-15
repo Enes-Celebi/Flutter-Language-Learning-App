@@ -1,117 +1,138 @@
-import 'package:flutter/material.dart';
+import "package:flutter/material.dart";
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
   @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Learn Turkish new'),
+      appBar: PreferredSize(
+      preferredSize: const Size.fromHeight(80),
+      child: Stack(
+        children: [
+          Column(
+            children: [
+              AppBar(
+                automaticallyImplyLeading: false,
+                backgroundColor: const Color.fromARGB(255, 224, 224, 224),
+                shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(10),
+                    bottomRight: Radius.circular(10),
+                  ),
+                ),
+                title: const Text(
+                  'Home',
+                  style: TextStyle(color: Colors.black),
+                ),
+              ),
+            ],
+          ),
+          Positioned(
+            top: 25,
+            left: 16,
+            child: GestureDetector(
+              onTap: () {
+                // go to profile & settings page
+              },
+              child: Container(
+                width: 60, // Adjusted width to accommodate the border thickness
+                height: 60, // Adjusted height to accommodate the border thickness
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Colors.white, // Background color of the circle
+                  border: Border.all(
+                    color: Colors.white, // Color of the border
+                    width: 10, // Width of the border
+                  ),
+                ),
+                child: const Icon(
+                  Icons.account_circle_rounded, // Default profile picture icon
+                  color: Colors.blue, // Color of the icon
+                  size: 50, // Size of the icon
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Column(
-          children: [
-            // Welcome message
-            const Text(
-              'Merhaba!', // Simple greeting
-              style: TextStyle(fontSize: 22.0),
-            ),
-            const Text('Let\'s continue your Turkish learning journey!'),
+    ),
 
-            // Learning progress section (optional)
-            const SizedBox(height: 20.0),
-            const Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text('Progress:'),
-                Text('Level 2 (50% completed)'), // replace with your logic
-              ],
-            ),
-
-            // Learning options section
-            const SizedBox(height: 20.0),
-            const Text('Choose your learning path:'),
-            const SizedBox(height: 10.0),
-            Wrap( // Wrap for responsive layout
-              spacing: 10.0,
-              runSpacing: 10.0,
-              children: [
-                InkWell(
-                  onTap: () {
-                    // navigate to vocabulary lessons screen
-                  },
-                  child: const Card(
-                    child: Padding(
-                      padding: EdgeInsets.all(10.0),
-                      child: Column(
-                        children: [
-                          Icon(Icons.book, size: 30.0),
-                          Text('Vocabulary'),
-                        ],
-                      ),
-                    ),
+      body: PageView(
+        children: [
+          // First card
+          Transform.translate(
+            offset: const Offset(0, -30), // Adjust the value to move it up or down
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 100, horizontal: 30),
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  color: Colors.blue,
+                  borderRadius: BorderRadius.circular(25),
+                ),
+                child: const Center(
+                  child: Text(
+                    'Card 1',
+                    style: TextStyle(color: Colors.white, fontSize: 24),
                   ),
                 ),
-                InkWell(
-                  onTap: () {
-                    // navigate to grammar lessons screen
-                  },
-                  child: const Card(
-                    child: Padding(
-                      padding: EdgeInsets.all(10.0),
-                      child: Column(
-                        children: [
-                          Icon(Icons.format_list_bulleted, size: 30.0),
-                          Text('Grammar'),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-                InkWell(
-                  onTap: () {
-                    // navigate to conversation practice screen
-                  },
-                  child: const Card(
-                    child: Padding(
-                      padding: EdgeInsets.all(10.0),
-                      child: Column(
-                        children: [
-                          Icon(Icons.chat, size: 30.0),
-                          Text('Conversation'),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ],
+              ),
             ),
+          ),
 
-            // Additional options (optional)
-            const SizedBox(height: 20.0),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                ElevatedButton.icon(
-                  onPressed: () {
-                    // navigate to daily challenge screen
-                  },
-                  icon: const Icon(Icons.star),
-                  label: const Text('Daily Challenge'),
+          // Second card
+          Transform.translate(
+            offset: const Offset(0, -30), // Adjust the value to move it up or down
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 100, horizontal: 30),
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  color: Colors.green,
+                  borderRadius: BorderRadius.circular(25),
                 ),
-                IconButton(
-                  icon: const Icon(Icons.search),
-                  onPressed: () {
-                    // implement search functionality
-                  },
+                child: const Center(
+                  child: Text(
+                    'Card 2',
+                    style: TextStyle(color: Colors.white, fontSize: 24),
+                  ),
                 ),
-              ],
+              ),
             ),
-          ],
-        ),
+          ),
+
+          // Third card
+          Transform.translate(
+            offset: const Offset(0, -30), // Adjust the value to move it up or down
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 100, horizontal: 30),
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  color: Colors.red,
+                  borderRadius: BorderRadius.circular(25),
+                ),
+                child: const Center(
+                  child: Text(
+                    'Card 3',
+                    style: TextStyle(color: Colors.white, fontSize: 24),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          // Add onPressed function to handle button tap
+        },
+        child: const Icon(Icons.arrow_back),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
     );
   }
 }
