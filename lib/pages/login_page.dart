@@ -1,4 +1,6 @@
+import "package:firebase_auth/firebase_auth.dart";
 import "package:flutter/material.dart";
+import "package:lingoneer_beta_0_0_1/auth/auth_service.dart";
 import "package:lingoneer_beta_0_0_1/components/my_button.dart";
 import "package:lingoneer_beta_0_0_1/components/my_textfield.dart";
 import "package:lingoneer_beta_0_0_1/pages/home_page.dart";
@@ -13,26 +15,49 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  final _auth = AuthService();
   // text editing controllers
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
   // login method
-  void login() {
-    /*
-
-      fill out authentication here..
-
-    */
-
-    // navigate to home page
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => const HomePage(),
-      )
+  void login() async {
+  try {
+    final user = await _auth.loginUserWithEmailAndPassword(
+      emailController.text,
+      passwordController.text,
     );
+
+    if (user != null) {
+      print("User Logged In");
+
+      // navigate to home page
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const HomePage()),
+      );
+    }
+    else{
+      print("anas error");
+    }
+  } on FirebaseAuthException catch (e) {
+    print("hello from catching errors");
+    
+    if (e.code == 'user-not-found') {
+      print('No user found for that email.');
+      // Show a snackbar or dialog to the user
+    } else if (e.code == 'wrong-password') {
+      print('Wrong password provided for that email.');
+      // Show a snackbar or dialog to the user
+    } else {
+      print(e.code); // Log the error code for debugging
+      // Show a generic error message to the user
+    }
+  } catch (e) {
+    print(e); // Log the error for debugging
+    // Show a generic error message to the user
   }
+}
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +78,7 @@ class _LoginPageState extends State<LoginPage> {
 
             // message, app slogan
             Text(
-              "Food delivery app",
+              "Food delivery app new",
               style: TextStyle(
                 fontSize: 16,
                 color: Theme.of(context).colorScheme.inversePrimary,
@@ -116,4 +141,6 @@ class _LoginPageState extends State<LoginPage> {
       ),
     );
   }
+
+  
 }
