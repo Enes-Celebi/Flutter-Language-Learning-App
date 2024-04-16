@@ -68,66 +68,8 @@ class _HomePageState extends State<HomePage> {
     ),
 
       body: PageView(
-        children: [
-          // First card
-          Transform.translate(
-            offset: const Offset(0, -30), // Adjust the value to move it up or down
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 100, horizontal: 30),
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  color: Colors.blue,
-                  borderRadius: BorderRadius.circular(25),
-                ),
-                child: const Center(
-                  child: Text(
-                    'Card 1',
-                    style: TextStyle(color: Colors.white, fontSize: 24),
-                  ),
-                ),
-              ),
-            ),
-          ),
-
-          // Second card
-          Transform.translate(
-            offset: const Offset(0, -30), // Adjust the value to move it up or down
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 100, horizontal: 30),
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  color: Colors.green,
-                  borderRadius: BorderRadius.circular(25),
-                ),
-                child: const Center(
-                  child: Text(
-                    'Card 2',
-                    style: TextStyle(color: Colors.white, fontSize: 24),
-                  ),
-                ),
-              ),
-            ),
-          ),
-
-          // Third card
-          Transform.translate(
-            offset: const Offset(0, -30), // Adjust the value to move it up or down
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 100, horizontal: 30),
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  color: Colors.red,
-                  borderRadius: BorderRadius.circular(25),
-                ),
-                child: const Center(
-                  child: Text(
-                    'Card 3',
-                    style: TextStyle(color: Colors.white, fontSize: 24),
-                  ),
-                ),
-              ),
-            ),
-          ),
+        children: const [
+          //cards
         ],
       ),
       floatingActionButton: FloatingActionButton(
