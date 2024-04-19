@@ -1,5 +1,6 @@
 import "package:flutter/material.dart";
 import "package:flutter/widgets.dart";
+import "package:lingoneer_beta_0_0_1/components/my_main_card.dart";
 import "package:lingoneer_beta_0_0_1/pages/subject_level_page.dart";
 
 class HomePage extends StatefulWidget {
@@ -107,72 +108,45 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
       ),
-
+      
       body: PageView(
+        
         children: [
-          // First card
-          GestureDetector(
-            onTap: () {
-              _goToSubjectLevel(0);
-            },
-            child: Transform.translate(
-              offset: const Offset(0, -30), // Adjust the value to move it up or down
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 80, horizontal: 30),
-                child: DecoratedBox(
-                  decoration: BoxDecoration(
-                    color: Colors.blue,
-                    borderRadius: BorderRadius.circular(25),
-                  ),
-                  child: const Center(
-                    child: Text(
-                      'Card 1',
-                      style: TextStyle(color: Colors.white, fontSize: 24),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
 
-          // Second card
-          Transform.translate(
-            offset: const Offset(0, -30), // Adjust the value to move it up or down
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 80, horizontal: 30),
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  color: Colors.green,
-                  borderRadius: BorderRadius.circular(25),
-                ),
-                child: const Center(
-                  child: Text(
-                    'Card 2',
-                    style: TextStyle(color: Colors.white, fontSize: 24),
-                  ),
-                ),
+          // first card
+          MyMainCard(
+                title: 'Sample Card 1',
+                imagePath: 'lib/assets/images/test/pic1.png',
+                progressValue: 0.5,
+                cardColor: Colors.blue,
+                progressColor: Colors.green,
+                onTap: () {
+                  _goToSubjectLevel(0);
+                },
               ),
-            ),
-          ),
 
-          // Third card
-          Transform.translate(
-            offset: const Offset(0, -30), // Adjust the value to move it up or down
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 80, horizontal: 30),
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  color: Colors.red,
-                  borderRadius: BorderRadius.circular(25),
-                ),
-                child: const Center(
-                  child: Text(
-                    'Card 3',
-                    style: TextStyle(color: Colors.white, fontSize: 24),
-                  ),
-                ),
+          // second card
+          MyMainCard(
+                title: 'Sample Card 1',
+                imagePath: 'lib/assets/images/test/pic1.png',
+                progressValue: 0.5,
+                cardColor: Colors.blue,
+                progressColor: Colors.green,
+                onTap: () {
+                  _goToSubjectLevel(0);
+                },
               ),
-            ),
+
+          // third card
+          MyMainCard(
+                title: 'Sample Card 1',
+                imagePath: 'lib/assets/images/test/pic1.png',
+                progressValue: 0.5,
+                cardColor: Colors.blue,
+                progressColor: Colors.green,
+                onTap: () {
+                  _goToSubjectLevel(0);
+                },
           ),
         ],
       ),

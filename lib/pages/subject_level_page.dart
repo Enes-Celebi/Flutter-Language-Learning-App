@@ -1,4 +1,5 @@
 import "package:flutter/material.dart";
+import "package:lingoneer_beta_0_0_1/components/subject_level_card.dart";
 import "package:lingoneer_beta_0_0_1/pages/progress_map_page.dart";
 
 class subjectLevelPage extends StatefulWidget {
@@ -64,11 +65,6 @@ class _SubjectLevelPageState extends State<subjectLevelPage> {
                       width: 8, // Width of the border
                     ),
                   ),
-                  // child: const Icon(
-                  //   Icons.account_circle_rounded, // Default profile picture icon
-                  //   color: Colors.blue, // Color of the icon
-                  //   size: 30, // Size of the icon
-                  // ),
                   child: Container(
                     width: 70,
                     height: 70,
@@ -87,79 +83,55 @@ class _SubjectLevelPageState extends State<subjectLevelPage> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            // First card
-            GestureDetector(
-              onTap: () {
-                // card clicked function
-                _goToProgressMapPage(0);
-              },
-              child: Padding(
-                padding: const EdgeInsets.all(20),
-                child: DecoratedBox(
-                  decoration: BoxDecoration(
-                    color: Colors.blue,
-                    borderRadius: BorderRadius.circular(25),
-                  ),
-                  child: const Center(
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(vertical: 80, horizontal:  80),
-                      child: Text(
-                        'Card 1',
-                        style: TextStyle(color: Colors.white, fontSize: 24),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
+
+            // card 1
+            SubjectLevelCard(
+              title: "Subject level 1",
+             imagePath: 'lib/assets/images/test/pic1.png', 
+             progressValue: 0.9, 
+             cardColor: Colors.green, 
+             progressColor: const Color.fromARGB(255, 20, 49, 21), 
+             onTap: () {
+              _goToProgressMapPage(0);
+             },
             ),
-            // Second card
-            GestureDetector(
-              onTap: () {
-                // card clicked function
-              },
-              child: Padding(
-                padding: const EdgeInsets.all(20),
-                child: DecoratedBox(
-                  decoration: BoxDecoration(
-                    color: Colors.blue,
-                    borderRadius: BorderRadius.circular(25),
-                  ),
-                  child: const Center(
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(vertical: 80, horizontal:  80),
-                      child: Text(
-                        'Card 2',
-                        style: TextStyle(color: Colors.white, fontSize: 24),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
+
+            // card 1
+            SubjectLevelCard(
+              title: "Subject level 1",
+             imagePath: 'lib/assets/images/test/pic1.png', 
+             progressValue: 0.9, 
+             cardColor: Colors.green, 
+             progressColor: const Color.fromARGB(255, 20, 49, 21), 
+             onTap: () {
+              _goToProgressMapPage(0);
+             },
             ),
-            // Third card
-            GestureDetector(
-              onTap: () {
-                // card clicked function
-              },
-              child: Padding(
-                padding: const EdgeInsets.all(20),
-                child: DecoratedBox(
-                  decoration: BoxDecoration(
-                    color: Colors.blue,
-                    borderRadius: BorderRadius.circular(25),
-                  ),
-                  child: const Center(
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(vertical: 80, horizontal:  80),
-                      child: Text(
-                        'Card 3',
-                        style: TextStyle(color: Colors.white, fontSize: 24),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
+
+            // card 1
+            SubjectLevelCard(
+              title: "Subject level 1",
+             imagePath: 'lib/assets/images/test/pic1.png', 
+             progressValue: 0.9, 
+             cardColor: Colors.green, 
+             progressColor: const Color.fromARGB(255, 20, 49, 21), 
+             onTap: () {
+              _goToProgressMapPage(0);
+             },
             ),
+
+            // card 1
+            SubjectLevelCard(
+              title: "Subject level 1",
+             imagePath: 'lib/assets/images/test/pic1.png', 
+             progressValue: 0.9, 
+             cardColor: Colors.green, 
+             progressColor: const Color.fromARGB(255, 20, 49, 21), 
+             onTap: () {
+              _goToProgressMapPage(0);
+             },
+            ),
+
           ],
         ),
       ),

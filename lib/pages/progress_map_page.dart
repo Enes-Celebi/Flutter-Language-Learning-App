@@ -1,4 +1,5 @@
 import "package:flutter/material.dart";
+import "package:lingoneer_beta_0_0_1/components/progress_map_card.dart";
 
 class progressMapPage extends StatefulWidget {
   final int selectedCardIndex;
@@ -52,11 +53,6 @@ class _progressMapPageState extends State<progressMapPage> {
                       width: 8, // Width of the border
                     ),
                   ),
-                  // child: const Icon(
-                  //   Icons.account_circle_rounded, // Default profile picture icon
-                  //   color: Colors.blue, // Color of the icon
-                  //   size: 30, // Size of the icon
-                  // ),
                   child: Container(
                     width: 70,
                     height: 70,
@@ -75,197 +71,95 @@ class _progressMapPageState extends State<progressMapPage> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            // First card
-            GestureDetector(
-              onTap: () {
-                // card clicked function
-              },
-              child: Padding(
-                padding: const EdgeInsets.only(top: 20, bottom: 20, left: 30, right: 150),
-                child: DecoratedBox(
-                  decoration: BoxDecoration(
-                    color: Colors.blue,
-                    borderRadius: BorderRadius.circular(25),
-                  ),
-                  child: const Center(
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(vertical: 40, horizontal:  40),
-                      child: Text(
-                        'Card 1',
-                        style: TextStyle(color: Colors.white, fontSize: 24),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
+            
+            // first card
+            ProgressMapCard(
+              title: "lesson 1", 
+              imagePath: 'lib/assets/images/test/pic1.png', 
+              cardColor: Colors.blue, 
+              onTap: () {},
+              alignRight: false,
             ),
-            // Second card
-            GestureDetector(
-              onTap: () {
-                // card clicked function
-              },
-              child: Padding(
-                padding: const EdgeInsets.only(top: 20, bottom: 20, left: 150, right: 30),
-                child: DecoratedBox(
-                  decoration: BoxDecoration(
-                    color: Colors.blue,
-                    borderRadius: BorderRadius.circular(25),
-                  ),
-                  child: const Center(
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(vertical: 40, horizontal:  40),
-                      child: Text(
-                        'Card 2',
-                        style: TextStyle(color: Colors.white, fontSize: 24),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
+            
+            // first card
+            ProgressMapCard(
+              title: "lesson 1", 
+              imagePath: 'lib/assets/images/test/pic1.png', 
+              cardColor: Colors.blue, 
+              onTap: () {},
+              alignRight: true,
             ),
-            // Third card
-            GestureDetector(
-              onTap: () {
-                // card clicked function
-              },
-              child: Padding(
-                padding: const EdgeInsets.only(top: 20, bottom: 20, left: 30, right: 150),
-                child: DecoratedBox(
-                  decoration: BoxDecoration(
-                    color: Colors.blue,
-                    borderRadius: BorderRadius.circular(25),
-                  ),
-                  child: const Center(
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(vertical: 40, horizontal:  40),
-                      child: Text(
-                        'Card 3',
-                        style: TextStyle(color: Colors.white, fontSize: 24),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
+
+            // first card
+            ProgressMapCard(
+              title: "lesson 1", 
+              imagePath: 'lib/assets/images/test/pic1.png', 
+              cardColor: Colors.blue, 
+              onTap: () {},
+              alignRight: false,
             ),
-            // Second card
-            GestureDetector(
-              onTap: () {
-                // card clicked function
-              },
-              child: Padding(
-                padding: const EdgeInsets.only(top: 20, bottom: 20, left: 150, right: 30),
-                child: DecoratedBox(
-                  decoration: BoxDecoration(
-                    color: Colors.blue,
-                    borderRadius: BorderRadius.circular(25),
-                  ),
-                  child: const Center(
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(vertical: 40, horizontal:  40),
-                      child: Text(
-                        'Card 2',
-                        style: TextStyle(color: Colors.white, fontSize: 24),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
+
+            // first card
+            ProgressMapCard(
+              title: "lesson 1", 
+              imagePath: 'lib/assets/images/test/pic1.png', 
+              cardColor: Colors.blue, 
+              onTap: () {},
+              alignRight: true,
             ),
-            // Third card
-            GestureDetector(
-              onTap: () {
-                // card clicked function
-              },
-              child: Padding(
-                padding: const EdgeInsets.only(top: 20, bottom: 20, left: 30, right: 150),
-                child: DecoratedBox(
-                  decoration: BoxDecoration(
-                    color: Colors.blue,
-                    borderRadius: BorderRadius.circular(25),
-                  ),
-                  child: const Center(
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(vertical: 40, horizontal:  40),
-                      child: Text(
-                        'Card 3',
-                        style: TextStyle(color: Colors.white, fontSize: 24),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
+
+            // first card
+            ProgressMapCard(
+              title: "lesson 1", 
+              imagePath: 'lib/assets/images/test/pic1.png', 
+              cardColor: Colors.blue, 
+              onTap: () {},
+              alignRight: false,
             ),
-            // Second card
-            GestureDetector(
-              onTap: () {
-                // card clicked function
-              },
-              child: Padding(
-                padding: const EdgeInsets.only(top: 20, bottom: 20, left: 150, right: 30),
-                child: DecoratedBox(
-                  decoration: BoxDecoration(
-                    color: Colors.blue,
-                    borderRadius: BorderRadius.circular(25),
-                  ),
-                  child: const Center(
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(vertical: 40, horizontal:  40),
-                      child: Text(
-                        'Card 2',
-                        style: TextStyle(color: Colors.white, fontSize: 24),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
+
+            // first card
+            ProgressMapCard(
+              title: "lesson 1", 
+              imagePath: 'lib/assets/images/test/pic1.png', 
+              cardColor: Colors.blue, 
+              onTap: () {},
+              alignRight: true,
             ),
-            // Third card
-            GestureDetector(
-              onTap: () {
-                // card clicked function
-              },
-              child: Padding(
-                padding: const EdgeInsets.only(top: 20, bottom: 20, left: 30, right: 150),
-                child: DecoratedBox(
-                  decoration: BoxDecoration(
-                    color: Colors.blue,
-                    borderRadius: BorderRadius.circular(25),
-                  ),
-                  child: const Center(
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(vertical: 40, horizontal:  40),
-                      child: Text(
-                        'Card 3',
-                        style: TextStyle(color: Colors.white, fontSize: 24),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
+
+            // first card
+            ProgressMapCard(
+              title: "lesson 1", 
+              imagePath: 'lib/assets/images/test/pic1.png', 
+              cardColor: Colors.blue, 
+              onTap: () {},
+              alignRight: false,
             ),
-            // Second card
-            GestureDetector(
-              onTap: () {
-                // card clicked function
-              },
-              child: Padding(
-                padding: const EdgeInsets.only(top: 20, bottom: 20, left: 150, right: 30),
-                child: DecoratedBox(
-                  decoration: BoxDecoration(
-                    color: Colors.blue,
-                    borderRadius: BorderRadius.circular(25),
-                  ),
-                  child: const Center(
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(vertical: 40, horizontal:  40),
-                      child: Text(
-                        'Card 2',
-                        style: TextStyle(color: Colors.white, fontSize: 24),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
+
+            // first card
+            ProgressMapCard(
+              title: "lesson 1", 
+              imagePath: 'lib/assets/images/test/pic1.png', 
+              cardColor: Colors.blue, 
+              onTap: () {},
+              alignRight: true,
+            ),
+
+            // first card
+            ProgressMapCard(
+              title: "lesson 1", 
+              imagePath: 'lib/assets/images/test/pic1.png', 
+              cardColor: Colors.blue, 
+              onTap: () {},
+              alignRight: false,
+            ),
+
+            // first card
+            ProgressMapCard(
+              title: "lesson 1", 
+              imagePath: 'lib/assets/images/test/pic1.png', 
+              cardColor: Colors.blue, 
+              onTap: () {},
+              alignRight: true,
             ),
           ],
         ),
