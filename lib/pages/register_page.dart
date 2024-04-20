@@ -1,6 +1,5 @@
 import "package:firebase_auth/firebase_auth.dart";
 import "package:flutter/material.dart";
-import "package:lingoneer_beta_0_0_1/auth/auth_service.dart";
 import "package:lingoneer_beta_0_0_1/components/my_button.dart";
 import "package:lingoneer_beta_0_0_1/components/my_textfield.dart";
 import "package:lingoneer_beta_0_0_1/pages/home_page.dart";
@@ -16,7 +15,7 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
-  final _auth = AuthService();
+  final _auth = FirebaseAuth.instance;
   // text editing controllers
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
@@ -24,14 +23,15 @@ class _RegisterPageState extends State<RegisterPage> {
 
   // login method
   void signup() async {
-  try {
+    if (passwordController.text == confirmPasswordController.text){
+      try {
     final user = await _auth.createUserWithEmailAndPassword(
-      emailController.text.trim(), // Trim leading/trailing whitespace
-      passwordController.text,
+      email: emailController.text.trim(),
+      password: passwordController.text,
     );
 
     if (user != null) {
-      print("user created");
+      print("User created successfully");
 
       // navigate to home page
       Navigator.push(
@@ -39,26 +39,26 @@ class _RegisterPageState extends State<RegisterPage> {
         MaterialPageRoute(builder: (context) => const HomePage()),
       );
     }
-  } on FirebaseAuthException catch (e) {
-    String message = "";
-    if (e.code == 'weak-password') {
-      message = 'The password provided is too weak.';
-    } else if (e.code == 'email-already-in-use') {
-      message = 'The account already exists for that email.';
-    } else {
-      message = 'An error occurred. Please try again.'; // Generic message
-    }
-
-    ScaffoldMessenger.of(context).showSnackBar(
+  } catch (e) {
+    String message = "Sign Up failed";
+      ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
         backgroundColor: Theme.of(context).errorColor,
       ),
     );
-  } catch (e) {
-    print(e); // Log the error for debugging
-    // Show a generic error message to the user (optional)
   }
+    }
+    else{
+      String message = "Password not matching";
+      ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: Theme.of(context).errorColor,
+      ),
+    );
+    }
+  
 }
 
   @override

@@ -25,7 +25,6 @@ class AuthService {
       return cred.user;
     } catch (e) {
       log("Something went wrong");
-      print("from here");
     }
     return null;
   }
