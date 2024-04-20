@@ -127,9 +127,11 @@ class _HomePageState extends State<HomePage> {
     return PageView(
       children: categories.map((category) {
         final title = category.get('name');
+        final imageURL = category.get('imageUrl');
+        
         return MyMainCard(
           title: title ?? 'No Title', // Set default title if "name" is missing
-          imagePath: 'lib/assets/images/test/pic1.png',
+          imagePath: imageURL ?? 'lib/assets/images/test/pic1.png',
           progressValue: 0.5,
           cardColor: Colors.blue,
           progressColor: Colors.green,
