@@ -1,3 +1,4 @@
+import "package:cloud_firestore/cloud_firestore.dart";
 import "package:flutter/material.dart";
 import "package:flutter/widgets.dart";
 import "package:lingoneer_beta_0_0_1/components/my_main_card.dart";
@@ -109,47 +110,35 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
       
-      body: PageView(
-        
-        children: [
+      body: FutureBuilder<QuerySnapshot>(
+  future: FirebaseFirestore.instance.collection('Category').get(),
+  builder: (context, snapshot) {
+    if (snapshot.hasError) {
+      return Text('Error: ${snapshot.error}');
+    }
 
-          // first card
-          MyMainCard(
-                title: 'Sample Card 1',
-                imagePath: 'lib/assets/images/test/pic1.png',
-                progressValue: 0.5,
-                cardColor: Colors.blue,
-                progressColor: Colors.green,
-                onTap: () {
-                  _goToSubjectLevel(0);
-                },
-              ),
+    if (!snapshot.hasData) {
+      // Show a loading indicator while waiting for data
+      return Center(child: CircularProgressIndicator());
+    }
 
-          // second card
-          MyMainCard(
-                title: 'Sample Card 1',
-                imagePath: 'lib/assets/images/test/pic1.png',
-                progressValue: 0.5,
-                cardColor: Colors.blue,
-                progressColor: Colors.green,
-                onTap: () {
-                  _goToSubjectLevel(0);
-                },
-              ),
+    final categories = snapshot.data!.docs;
 
-          // third card
-          MyMainCard(
-                title: 'Sample Card 1',
-                imagePath: 'lib/assets/images/test/pic1.png',
-                progressValue: 0.5,
-                cardColor: Colors.blue,
-                progressColor: Colors.green,
-                onTap: () {
-                  _goToSubjectLevel(0);
-                },
-          ),
-        ],
-      ),
+    return PageView(
+      children: categories.map((category) {
+        final title = category.get('name');
+        return MyMainCard(
+          title: title ?? 'No Title', // Set default title if "name" is missing
+          imagePath: 'lib/assets/images/test/pic1.png',
+          progressValue: 0.5,
+          cardColor: Colors.blue,
+          progressColor: Colors.green,
+          onTap: () => _goToSubjectLevel(0), // Use document ID for navigation (optional)
+        );
+      }).toList(),
+    );
+  },
+),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           // show logout confirmation dialog
