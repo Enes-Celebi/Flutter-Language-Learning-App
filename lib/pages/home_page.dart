@@ -95,8 +95,6 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                   child: Container(
-                    width: 70,
-                    height: 70,
                     decoration: const BoxDecoration(
                       shape: BoxShape.circle,
                       color: Colors.blue,
@@ -119,7 +117,7 @@ class _HomePageState extends State<HomePage> {
                 imagePath: 'lib/assets/images/test/pic1.png',
                 progressValue: 0.5,
                 cardColor: Colors.blue,
-                progressColor: Colors.green,
+                progressColor: Colors.blue[800]!,
                 onTap: () {
                   _goToSubjectLevel(0);
                 },
@@ -130,8 +128,8 @@ class _HomePageState extends State<HomePage> {
                 title: 'Sample Card 1',
                 imagePath: 'lib/assets/images/test/pic1.png',
                 progressValue: 0.5,
-                cardColor: Colors.blue,
-                progressColor: Colors.green,
+                cardColor: Colors.red,
+                progressColor: Colors.red[800]!,
                 onTap: () {
                   _goToSubjectLevel(0);
                 },
@@ -142,8 +140,8 @@ class _HomePageState extends State<HomePage> {
                 title: 'Sample Card 1',
                 imagePath: 'lib/assets/images/test/pic1.png',
                 progressValue: 0.5,
-                cardColor: Colors.blue,
-                progressColor: Colors.green,
+                cardColor: Colors.green,
+                progressColor: Colors.green[800]!,
                 onTap: () {
                   _goToSubjectLevel(0);
                 },
