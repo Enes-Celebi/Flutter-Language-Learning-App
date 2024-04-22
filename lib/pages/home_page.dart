@@ -1,11 +1,11 @@
-import "package:cloud_firestore/cloud_firestore.dart";
-import "package:flutter/material.dart";
-import "package:lingoneer_beta_0_0_1/components/my_main_card.dart";
-import "package:lingoneer_beta_0_0_1/pages/subject_level_page.dart";
-import "package:lingoneer_beta_0_0_1/pages/settingPage.dart";
+import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:lingoneer_beta_0_0_1/components/my_main_card.dart';
+import 'package:lingoneer_beta_0_0_1/pages/subject_level_page.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  const HomePage({Key? key});
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -18,7 +18,41 @@ class _HomePageState extends State<HomePage> {
     Navigator.push(
       context,
       MaterialPageRoute(
-          builder: (context) => subjectLevelPage(selectedCardIndex: index)),
+        builder: (context) => subjectLevelPage(selectedCardIndex: index),
+      ),
+    );
+  }
+
+  Future<void> _logoutConfirmationDialog() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Logout Confirmation'),
+          content: const SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text('Log out of your account?'),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop(); // just close this dialog
+              },
+            ),
+            TextButton(
+              child: const Text('Yes'),
+              onPressed: () {
+                Navigator.of(context).popUntil((route) => route.isFirst);
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 
@@ -52,16 +86,14 @@ class _HomePageState extends State<HomePage> {
                       MaterialPageRoute(builder: (context) => SettingsPage()));
                 },
                 child: Container(
-                  width:
-                      60, // Adjusted width to accommodate the border thickness
-                  height:
-                      60, // Adjusted height to accommodate the border thickness
+                  width: 60,
+                  height: 60,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: Colors.white, // Background color of the circle
+                    color: Colors.white,
                     border: Border.all(
-                      color: Colors.white, // Color of the border
-                      width: 8, // Width of the border
+                      color: Colors.white,
+                      width: 8,
                     ),
                   ),
                   child: Container(
@@ -86,7 +118,6 @@ class _HomePageState extends State<HomePage> {
           }
 
           if (!snapshot.hasData) {
-            // Show a loading indicator while waiting for data
             return Center(child: CircularProgressIndicator());
           }
 
@@ -108,6 +139,12 @@ class _HomePageState extends State<HomePage> {
             }).toList(),
           );
         },
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          _logoutConfirmationDialog();
+        },
+        child: const Icon(Icons.arrow_back),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
     );

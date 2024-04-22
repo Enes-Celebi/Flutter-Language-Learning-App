@@ -64,6 +64,9 @@ flutter:
   assets:
     - lib/assets/images/test/pic1.png
     - lib/assets/images/test/math.png
+    - lib/assets/images/icons/done.png
+    - lib/assets/images/icons/undone.png
+    - lib/assets/images/icons/locked.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

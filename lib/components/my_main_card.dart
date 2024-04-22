@@ -56,6 +56,7 @@ class MyMainCard extends StatelessWidget {
                     borderRadius: BorderRadius.circular(15),
                     child: LinearProgressIndicator(
                       value: progressValue,
+                      color: progressColor,
                       backgroundColor: Colors.grey[300],
                     ),
                   ),

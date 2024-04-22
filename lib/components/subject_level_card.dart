@@ -4,8 +4,9 @@ class SubjectLevelCard extends StatelessWidget {
   final String title;
   final String imagePath;
   final Color cardColor;
-  final double progressValue;
   final Color progressColor;
+  
+  final double progressValue;
   final VoidCallback onTap;
 
   const SubjectLevelCard({
@@ -13,8 +14,8 @@ class SubjectLevelCard extends StatelessWidget {
     required this.title,
     required this.imagePath,
     required this.cardColor,
-    required this.progressValue,
     required this.progressColor,
+    required this.progressValue,
     required this.onTap,
   });
 
@@ -63,14 +64,12 @@ class SubjectLevelCard extends StatelessWidget {
                           borderRadius: BorderRadius.circular(15),
                           child: LinearProgressIndicator(
                             value: progressValue,
+                            color: progressColor,
                             backgroundColor: Colors.grey[300],
-                            valueColor: const AlwaysStoppedAnimation<Color>(
-                              Color.fromARGB(255, 16, 93, 155),
-                            ),
+                          ),
                           ),
                         ),
                       ),
-                    ),
                   ],
                 ),
               ),

@@ -90,7 +90,7 @@ class _SubjectLevelPageState extends State<subjectLevelPage> {
              imagePath: 'lib/assets/images/test/pic1.png', 
              progressValue: 0.9, 
              cardColor: Colors.green, 
-             progressColor: const Color.fromARGB(255, 20, 49, 21), 
+             progressColor: Colors.green[800]!, 
              onTap: () {
               _goToProgressMapPage(0);
              },
@@ -102,7 +102,7 @@ class _SubjectLevelPageState extends State<subjectLevelPage> {
              imagePath: 'lib/assets/images/test/pic1.png', 
              progressValue: 0.9, 
              cardColor: Colors.green, 
-             progressColor: const Color.fromARGB(255, 20, 49, 21), 
+             progressColor: Colors.green[800]!, 
              onTap: () {
               _goToProgressMapPage(0);
              },
@@ -114,7 +114,7 @@ class _SubjectLevelPageState extends State<subjectLevelPage> {
              imagePath: 'lib/assets/images/test/pic1.png', 
              progressValue: 0.9, 
              cardColor: Colors.green, 
-             progressColor: const Color.fromARGB(255, 20, 49, 21), 
+             progressColor: Colors.green[800]!, 
              onTap: () {
               _goToProgressMapPage(0);
              },
@@ -126,7 +126,7 @@ class _SubjectLevelPageState extends State<subjectLevelPage> {
              imagePath: 'lib/assets/images/test/pic1.png', 
              progressValue: 0.9, 
              cardColor: Colors.green, 
-             progressColor: const Color.fromARGB(255, 20, 49, 21), 
+             progressColor: Colors.green[800]!, 
              onTap: () {
               _goToProgressMapPage(0);
              },
