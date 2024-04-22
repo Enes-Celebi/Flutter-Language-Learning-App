@@ -36,4 +36,5 @@ class AuthService {
       log("Something went wrong");
     }
   }
+
 }

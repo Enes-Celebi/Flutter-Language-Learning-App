@@ -1,10 +1,11 @@
-import "package:flutter/material.dart";
-import "package:flutter/widgets.dart";
-import "package:lingoneer_beta_0_0_1/components/my_main_card.dart";
-import "package:lingoneer_beta_0_0_1/pages/subject_level_page.dart";
+import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:lingoneer_beta_0_0_1/components/my_main_card.dart';
+import 'package:lingoneer_beta_0_0_1/pages/subject_level_page.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  const HomePage({Key? key});
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -17,12 +18,12 @@ class _HomePageState extends State<HomePage> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => subjectLevelPage(selectedCardIndex: index)
+        builder: (context) => subjectLevelPage(selectedCardIndex: index),
       ),
     );
   }
 
-  Future<void> _logoutConfirmationDialog() async{
+  Future<void> _logoutConfirmationDialog() async {
     return showDialog<void>(
       context: context,
       barrierDismissible: false,
@@ -48,13 +49,13 @@ class _HomePageState extends State<HomePage> {
               onPressed: () {
                 Navigator.of(context).popUntil((route) => route.isFirst);
               },
-            )
+            ),
           ],
         );
-      }
+      },
     );
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -84,73 +85,62 @@ class _HomePageState extends State<HomePage> {
                   // go to profile & settings page
                 },
                 child: Container(
-                  width: 60, // Adjusted width to accommodate the border thickness
-                  height: 60, // Adjusted height to accommodate the border thickness
+                  width: 60,
+                  height: 60,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: Colors.white, // Background color of the circle
+                    color: Colors.white,
                     border: Border.all(
-                      color: Colors.white, // Color of the border
-                      width: 8, // Width of the border
+                      color: Colors.white,
+                      width: 8,
                     ),
                   ),
                   child: Container(
+                    width: 70,
+                    height: 70,
                     decoration: const BoxDecoration(
                       shape: BoxShape.circle,
                       color: Colors.blue,
                     ),
                   ),
                 ),
-             ),
+              ),
             ),
           ],
         ),
       ),
-      
-      body: PageView(
-        
-        children: [
+      body: FutureBuilder<QuerySnapshot>(
+        future: FirebaseFirestore.instance.collection('Category').get(),
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return Text('Error: ${snapshot.error}');
+          }
 
-          // first card
-          MyMainCard(
-                title: 'Sample Card 1',
-                imagePath: 'lib/assets/images/test/pic1.png',
+          if (!snapshot.hasData) {
+            return Center(child: CircularProgressIndicator());
+          }
+
+          final categories = snapshot.data!.docs;
+
+          return PageView(
+            children: categories.map((category) {
+              final title = category.get('name');
+              final imageURL = category.get('imageUrl');
+
+              return MyMainCard(
+                title: title ?? 'No Title',
+                imagePath: imageURL ?? 'lib/assets/images/test/pic1.png',
                 progressValue: 0.5,
                 cardColor: Colors.blue,
-                progressColor: Colors.blue[800]!,
-                onTap: () {
-                  _goToSubjectLevel(0);
-                },
-              ),
-
-          // second card
-          MyMainCard(
-                title: 'Sample Card 1',
-                imagePath: 'lib/assets/images/test/pic1.png',
-                progressValue: 0.5,
-                cardColor: Colors.red,
-                progressColor: Colors.red[800]!,
-                onTap: () {
-                  _goToSubjectLevel(0);
-                },
-              ),
-
-          // third card
-          MyMainCard(
-                title: 'Sample Card 1',
-                imagePath: 'lib/assets/images/test/pic1.png',
-                progressValue: 0.5,
-                cardColor: Colors.green,
-                progressColor: Colors.green[800]!,
-                onTap: () {
-                  _goToSubjectLevel(0);
-                },
-          ),
-        ],
+                progressColor: Colors.green,
+                onTap: () => _goToSubjectLevel(0),
+              );
+            }).toList(),
+          );
+        },
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // show logout confirmation dialog
           _logoutConfirmationDialog();
         },
         child: const Icon(Icons.arrow_back),

@@ -30,8 +30,9 @@ class _RegisterPageState extends State<RegisterPage> {
       password: passwordController.text,
     );
 
+    // ignore: unnecessary_null_comparison
     if (user != null) {
-      print("User created successfully");
+      // print("User created successfully");
 
       // navigate to home page
       Navigator.push(
