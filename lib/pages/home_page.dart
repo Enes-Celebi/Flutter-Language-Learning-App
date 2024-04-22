@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:lingoneer_beta_0_0_1/components/my_main_card.dart';
+import 'package:lingoneer_beta_0_0_1/pages/settingPage.dart';
 import 'package:lingoneer_beta_0_0_1/pages/subject_level_page.dart';
 
 class HomePage extends StatefulWidget {
@@ -20,39 +20,6 @@ class _HomePageState extends State<HomePage> {
       MaterialPageRoute(
         builder: (context) => subjectLevelPage(selectedCardIndex: index),
       ),
-    );
-  }
-
-  Future<void> _logoutConfirmationDialog() async {
-    return showDialog<void>(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Logout Confirmation'),
-          content: const SingleChildScrollView(
-            child: ListBody(
-              children: <Widget>[
-                Text('Log out of your account?'),
-              ],
-            ),
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: const Text('Cancel'),
-              onPressed: () {
-                Navigator.of(context).pop(); // just close this dialog
-              },
-            ),
-            TextButton(
-              child: const Text('Yes'),
-              onPressed: () {
-                Navigator.of(context).popUntil((route) => route.isFirst);
-              },
-            ),
-          ],
-        );
-      },
     );
   }
 
@@ -129,24 +96,19 @@ class _HomePageState extends State<HomePage> {
               final imageURL = category.get('imageUrl');
 
               return MyMainCard(
-                title: title ?? 'No Title',
+                title: title ??
+                    'No Title', // Set default title if "name" is missing
                 imagePath: imageURL ?? 'lib/assets/images/test/pic1.png',
                 progressValue: 0.5,
                 cardColor: Colors.blue,
                 progressColor: Colors.green,
-                onTap: () => _goToSubjectLevel(0),
+                onTap: () => _goToSubjectLevel(
+                    0), // Use document ID for navigation (optional)
               );
             }).toList(),
           );
         },
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          _logoutConfirmationDialog();
-        },
-        child: const Icon(Icons.arrow_back),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
     );
   }
 }

@@ -1,6 +1,7 @@
 import "package:flutter/material.dart";
 import "package:lingoneer_beta_0_0_1/components/subject_level_card.dart";
 import "package:lingoneer_beta_0_0_1/pages/progress_map_page.dart";
+import "package:lingoneer_beta_0_0_1/pages/settingPage.dart";
 
 class subjectLevelPage extends StatefulWidget {
   final int selectedCardIndex;
@@ -52,7 +53,8 @@ class _SubjectLevelPageState extends State<subjectLevelPage> {
               left: 10,
               child: GestureDetector(
                 onTap: () {
-                  // go to profile & settings page
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => SettingsPage()));
                 },
                 child: Container(
                   width: 60, // Adjusted width to accommodate the border thickness

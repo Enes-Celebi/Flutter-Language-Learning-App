@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:lingoneer_beta_0_0_1/pages/login_page.dart';
 
-
 class SettingsPage extends StatelessWidget {
   final _auth = FirebaseAuth.instance;
 
@@ -57,7 +56,26 @@ class SettingsPage extends StatelessWidget {
                   ),
                 ),
               ),
-            ),
+            ),Positioned(
+      right: 30,
+      top:120,
+      child: Container(
+        width: 60.0,
+        height: 60.0,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(30.0),
+          color: Colors.grey[300], // Placeholder color
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(30.0),
+          child: Image.asset(
+            'lib/assets/images/test/turkey_flag.png', // Replace with your asset path
+            fit: BoxFit.contain,
+          ),
+        ),
+      ),
+    ),
+            
           ],
         ),
       ),
@@ -78,9 +96,28 @@ class SettingsPage extends StatelessWidget {
           const ListTile(
             title: Text('Notifications'),
             trailing: Switch(
-              value: true, // Adjust initial switch value
+              value: false, // Adjust initial switch value
               onChanged: null, // Handle switch change
             ),
+          ),
+          ListTile(
+            title: const Text('User Language'),
+            trailing: Container(
+              decoration: BoxDecoration(
+                borderRadius:
+                    BorderRadius.circular(30.0), // Adjust the value as needed
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(30.0), // Same value as above
+                child: Image.asset(
+                  'lib/assets/images/test/english_flag.png', // Replace with your asset path
+                  width: 60.0,
+                  height: 60.0,
+                  fit: BoxFit.contain,
+                ),
+              ),
+            ),
+            onTap: () {},
           ),
           ListTile(
             title: const Text('Sign Out'),
@@ -88,8 +125,12 @@ class SettingsPage extends StatelessWidget {
             onTap: () async {
               await _auth.signOut();
 
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => LoginPage(onTap: () {  },)));
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => LoginPage(
+                            onTap: () {},
+                          )));
             },
           ),
         ],

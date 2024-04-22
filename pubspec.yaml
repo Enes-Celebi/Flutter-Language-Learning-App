@@ -67,6 +67,8 @@ flutter:
     - lib/assets/images/icons/done.png
     - lib/assets/images/icons/undone.png
     - lib/assets/images/icons/locked.png
+    - lib/assets/images/test/english_flag.png
+    - lib/assets/images/test/turkey_flag.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

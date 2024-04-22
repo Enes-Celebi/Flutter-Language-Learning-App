@@ -1,6 +1,7 @@
 import "package:flutter/material.dart";
 import "package:lingoneer_beta_0_0_1/components/progress_map_card.dart";
 import "package:lingoneer_beta_0_0_1/pages/lesson_page.dart";
+import "package:lingoneer_beta_0_0_1/pages/settingPage.dart";
 import "package:lingoneer_beta_0_0_1/pages/test_page.dart";
 
 class progressMapPage extends StatefulWidget {
@@ -62,7 +63,8 @@ class _progressMapPageState extends State<progressMapPage> {
               left: 10,
               child: GestureDetector(
                 onTap: () {
-                  // go to profile & settings page
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => SettingsPage()));
                 },
                 child: Container(
                   width: 60, // Adjusted width to accommodate the border thickness
