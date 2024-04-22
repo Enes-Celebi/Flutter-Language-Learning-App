@@ -28,8 +28,7 @@ class _LoginPageState extends State<LoginPage> {
       );
 
       if (cred.user != null) {
-        // print("User Logged In");
-
+        
         // Navigate to the home page
         Navigator.pushReplacement(
           context,

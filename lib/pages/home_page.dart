@@ -1,8 +1,8 @@
 import "package:cloud_firestore/cloud_firestore.dart";
 import "package:flutter/material.dart";
-import "package:flutter/widgets.dart";
 import "package:lingoneer_beta_0_0_1/components/my_main_card.dart";
 import "package:lingoneer_beta_0_0_1/pages/subject_level_page.dart";
+import "package:lingoneer_beta_0_0_1/pages/settingPage.dart";
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -18,44 +18,10 @@ class _HomePageState extends State<HomePage> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => subjectLevelPage(selectedCardIndex: index)
-      ),
+          builder: (context) => subjectLevelPage(selectedCardIndex: index)),
     );
   }
 
-  Future<void> _logoutConfirmationDialog() async{
-    return showDialog<void>(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Logout Confirmation'),
-          content: const SingleChildScrollView(
-            child: ListBody(
-              children: <Widget>[
-                Text('Log out of your account?'),
-              ],
-            ),
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: const Text('Cancel'),
-              onPressed: () {
-                Navigator.of(context).pop(); // just close this dialog
-              },
-            ),
-            TextButton(
-              child: const Text('Yes'),
-              onPressed: () {
-                Navigator.of(context).popUntil((route) => route.isFirst);
-              },
-            )
-          ],
-        );
-      }
-    );
-  }
-  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -82,11 +48,14 @@ class _HomePageState extends State<HomePage> {
               left: 10,
               child: GestureDetector(
                 onTap: () {
-                  // go to profile & settings page
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => SettingsPage()));
                 },
                 child: Container(
-                  width: 60, // Adjusted width to accommodate the border thickness
-                  height: 60, // Adjusted height to accommodate the border thickness
+                  width:
+                      60, // Adjusted width to accommodate the border thickness
+                  height:
+                      60, // Adjusted height to accommodate the border thickness
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     color: Colors.white, // Background color of the circle
@@ -104,49 +73,41 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                 ),
-             ),
+              ),
             ),
           ],
         ),
       ),
-      
       body: FutureBuilder<QuerySnapshot>(
-  future: FirebaseFirestore.instance.collection('Category').get(),
-  builder: (context, snapshot) {
-    if (snapshot.hasError) {
-      return Text('Error: ${snapshot.error}');
-    }
+        future: FirebaseFirestore.instance.collection('Category').get(),
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return Text('Error: ${snapshot.error}');
+          }
 
-    if (!snapshot.hasData) {
-      // Show a loading indicator while waiting for data
-      return Center(child: CircularProgressIndicator());
-    }
+          if (!snapshot.hasData) {
+            // Show a loading indicator while waiting for data
+            return Center(child: CircularProgressIndicator());
+          }
 
-    final categories = snapshot.data!.docs;
+          final categories = snapshot.data!.docs;
 
-    return PageView(
-      children: categories.map((category) {
-        final title = category.get('name');
-        final imageURL = category.get('imageUrl');
-        
-        return MyMainCard(
-          title: title ?? 'No Title', // Set default title if "name" is missing
-          imagePath: imageURL ?? 'lib/assets/images/test/pic1.png',
-          progressValue: 0.5,
-          cardColor: Colors.blue,
-          progressColor: Colors.green,
-          onTap: () => _goToSubjectLevel(0), // Use document ID for navigation (optional)
-        );
-      }).toList(),
-    );
-  },
-),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // show logout confirmation dialog
-          _logoutConfirmationDialog();
+          return PageView(
+            children: categories.map((category) {
+              final title = category.get('name');
+              final imageURL = category.get('imageUrl');
+
+              return MyMainCard(
+                title: title ?? 'No Title',
+                imagePath: imageURL ?? 'lib/assets/images/test/pic1.png',
+                progressValue: 0.5,
+                cardColor: Colors.blue,
+                progressColor: Colors.green,
+                onTap: () => _goToSubjectLevel(0),
+              );
+            }).toList(),
+          );
         },
-        child: const Icon(Icons.arrow_back),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
     );
