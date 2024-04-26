@@ -1,6 +1,5 @@
-
 import 'package:flutter/material.dart';
-import 'package:lingoneer_beta_0_0_1/pages/settingPage.dart';
+import 'package:lingoneer_beta_0_0_1/pages/profile_settings_page.dart';
 
 // custom_app_bar.dart
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
@@ -9,7 +8,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
 
 
   @override
-  Size get preferredSize => const Size.fromHeight(kToolbarHeight); // Standard AppBar height
+  Size get preferredSize => const Size.fromHeight(80); // Standard AppBar height
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +20,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
               children: [
                 AppBar(
                   automaticallyImplyLeading: false,
-                  backgroundColor: const Color.fromARGB(255, 224, 224, 224),
+                  backgroundColor: Theme.of(context).colorScheme.tertiary, // COLOR
                   shape: const RoundedRectangleBorder(
                     borderRadius: BorderRadius.only(
                       bottomLeft: Radius.circular(10),
@@ -44,18 +43,18 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                   height: 60,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: Colors.white,
+                    color: Theme.of(context).colorScheme.background, //COLOR
                     border: Border.all(
-                      color: Colors.white,
+                      color: Theme.of(context).colorScheme.background, //COLOR
                       width: 8,
                     ),
                   ),
                   child: Container(
                     width: 70,
                     height: 70,
-                    decoration: const BoxDecoration(
+                    decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: Colors.blue,
+                      color: Theme.of(context).colorScheme.primary, // COLOR
                     ),
                   ),
                 ),

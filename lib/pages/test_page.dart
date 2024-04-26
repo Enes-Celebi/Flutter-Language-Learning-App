@@ -1,6 +1,4 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart' show rootBundle;
 
 class TestPage extends StatefulWidget {
   const TestPage({Key? key, required this.selectedCardIndex}) : super(key: key);
@@ -15,7 +13,6 @@ class _TestPageState extends State<TestPage> {
   List<Map<String, dynamic>> questions = []; // List to store fetched questions
   int currentQuestionIndex = 0; // Index of the current question
   String? _selectedOption; // Variable to store the selected option for multiple-choice questions
-  String _userAnswer = ''; // Variable to store the user's answer for fill-in-the-blank questions
 
   @override
   void initState() {
@@ -58,7 +55,7 @@ class _TestPageState extends State<TestPage> {
     setState(() {
       currentQuestionIndex++; // Move to the next question
       _selectedOption = null; // Reset selected option
-      _userAnswer = ''; // Reset user's answer
+// Reset user's answer
     });
   }
 

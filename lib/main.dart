@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:lingoneer_beta_0_0_1/auth/login_or_register.dart';
 import 'package:lingoneer_beta_0_0_1/firebase_options.dart';
-import 'package:lingoneer_beta_0_0_1/pages/home_page.dart';
+import 'package:lingoneer_beta_0_0_1/pages/login_page.dart';
 import 'package:lingoneer_beta_0_0_1/themes/theme_provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:lingoneer_beta_0_0_1/services/data_loading.dart'; // Import your DataLoader class
@@ -31,7 +30,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: const LoginOrRegister(),
+      home: const LoginPage(onTap: null,),
       theme: Provider.of<ThemeProvider>(context).themeData,
     );
   }

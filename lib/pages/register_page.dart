@@ -3,6 +3,7 @@ import "package:flutter/material.dart";
 import "package:lingoneer_beta_0_0_1/components/my_button.dart";
 import "package:lingoneer_beta_0_0_1/components/my_textfield.dart";
 import "package:lingoneer_beta_0_0_1/pages/home_page.dart";
+import "package:lingoneer_beta_0_0_1/pages/login_page.dart";
 
 class RegisterPage extends StatefulWidget {
 
@@ -81,7 +82,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
             // message, app slogan
             Text(
-              "Food delivery app",
+              "Lingoengineer",
               style: TextStyle(
                 fontSize: 16,
                 color: Theme.of(context).colorScheme.inversePrimary,
@@ -137,7 +138,12 @@ class _RegisterPageState extends State<RegisterPage> {
                 ),
                 const SizedBox(width: 4),
                 GestureDetector(
-                  onTap: widget.onTap,
+                  onTap: () {
+    // Navigate to the registration screen
+    Navigator.push(
+      context, // Current build context
+      MaterialPageRoute(builder: (context) => const LoginPage(onTap:null,)), // Route definition
+    );},
                   child: Text(
                     "login now",
                     style: TextStyle(

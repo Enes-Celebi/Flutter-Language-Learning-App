@@ -1,7 +1,7 @@
 import "package:flutter/material.dart";
+import "package:lingoneer_beta_0_0_1/components/appbar.dart";
 import "package:lingoneer_beta_0_0_1/components/progress_map_card.dart";
 import "package:lingoneer_beta_0_0_1/pages/lesson_page.dart";
-import "package:lingoneer_beta_0_0_1/pages/settingPage.dart";
 import "package:lingoneer_beta_0_0_1/pages/test_page.dart";
 
 class progressMapPage extends StatefulWidget {
@@ -40,57 +40,7 @@ class _progressMapPageState extends State<progressMapPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(70),
-        child: Stack(
-          children: [
-            Column(
-              children: [
-                AppBar(
-                  automaticallyImplyLeading: false,
-                  backgroundColor: Theme.of(context).colorScheme.tertiary, // COLOR
-                  shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(10),
-                      bottomRight: Radius.circular(10),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            Positioned(
-              top: 40,
-              left: 10,
-              child: GestureDetector(
-                onTap: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => SettingsPage()));
-                },
-                child: Container(
-                  width: 60, // Adjusted width to accommodate the border thickness
-                  height: 60, // Adjusted height to accommodate the border thickness
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Theme.of(context).colorScheme.background, // COLOR, // Background color of the circle
-                    border: Border.all(
-                      color: Theme.of(context).colorScheme.background, // COLOR, // Color of the border
-                      width: 8, // Width of the border
-                    ),
-                  ),
-                  child: Container(
-                    width: 70,
-                    height: 70,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Theme.of(context).colorScheme.primary, // COLOR
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
+      appBar: const CustomAppBar(),
 
       body: SingleChildScrollView(
         child: Column(

@@ -26,4 +26,6 @@ class ThemeProvider with ChangeNotifier {
     // Return the initial light mode theme
     return lightMode;
   }
+
+  static of(BuildContext context) {}
 }
