@@ -1,0 +1,25 @@
+{
+    "subjects": [
+      {
+        "id": "mat1_tr",
+        "language": "tr",
+        "name": "Matematik",
+        "image": "imageurl",
+        "progress": 0
+      },
+      {
+        "id": "phy1_tr",
+        "language": "tr",
+        "name": "Fizik",
+        "image": "imageurl",
+        "progress": 0
+      },
+      {
+        "id": "chm1_tr",
+        "language": "tr",
+        "name": "Kimya",
+        "image": "imageurl",
+        "progress": 0
+      }
+    ]
+  }

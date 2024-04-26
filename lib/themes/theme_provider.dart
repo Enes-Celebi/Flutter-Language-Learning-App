@@ -1,6 +1,6 @@
-import "package:flutter/material.dart";
-import "package:lingoneer_beta_0_0_1/themes/dark_mode.dart";
-import "package:lingoneer_beta_0_0_1/themes/light_mode.dart";
+import 'package:flutter/material.dart';
+import 'package:lingoneer_beta_0_0_1/themes/dark_mode.dart';
+import 'package:lingoneer_beta_0_0_1/themes/light_mode.dart';
 
 class ThemeProvider with ChangeNotifier {
   ThemeData _themeData = lightMode;
@@ -20,5 +20,10 @@ class ThemeProvider with ChangeNotifier {
     } else {
       themeData = lightMode;
     }
+  }
+
+  ThemeData getInitialTheme() {
+    // Return the initial light mode theme
+    return lightMode;
   }
 }

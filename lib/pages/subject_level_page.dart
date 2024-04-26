@@ -38,7 +38,7 @@ class _SubjectLevelPageState extends State<subjectLevelPage> {
               children: [
                 AppBar(
                   automaticallyImplyLeading: false,
-                  backgroundColor: const Color.fromARGB(255, 224, 224, 224),
+                  backgroundColor: Theme.of(context).colorScheme.tertiary, // COLOR
                   shape: const RoundedRectangleBorder(
                     borderRadius: BorderRadius.only(
                       bottomLeft: Radius.circular(10),
@@ -61,18 +61,18 @@ class _SubjectLevelPageState extends State<subjectLevelPage> {
                   height: 60, // Adjusted height to accommodate the border thickness
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: Colors.white, // Background color of the circle
+                    color: Theme.of(context).colorScheme.background, // COLOR, // Background color of the circle
                     border: Border.all(
-                      color: Colors.white, // Color of the border
+                      color: Theme.of(context).colorScheme.background, // COLOR, // Color of the border
                       width: 8, // Width of the border
                     ),
                   ),
                   child: Container(
                     width: 70,
                     height: 70,
-                    decoration: const BoxDecoration(
+                    decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: Colors.blue,
+                      color: Theme.of(context).colorScheme.primary, // COLOR,
                     ),
                   ),
                 ),

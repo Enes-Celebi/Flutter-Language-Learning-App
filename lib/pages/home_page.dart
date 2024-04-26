@@ -5,7 +5,7 @@ import 'package:lingoneer_beta_0_0_1/pages/settingPage.dart';
 import 'package:lingoneer_beta_0_0_1/pages/subject_level_page.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key});
+  const HomePage({super.key});
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -34,7 +34,7 @@ class _HomePageState extends State<HomePage> {
               children: [
                 AppBar(
                   automaticallyImplyLeading: false,
-                  backgroundColor: const Color.fromARGB(255, 224, 224, 224),
+                  backgroundColor: Theme.of(context).colorScheme.tertiary, // COLOR
                   shape: const RoundedRectangleBorder(
                     borderRadius: BorderRadius.only(
                       bottomLeft: Radius.circular(10),
@@ -57,18 +57,18 @@ class _HomePageState extends State<HomePage> {
                   height: 60,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: Colors.white,
+                    color: Theme.of(context).colorScheme.background, //COLOR
                     border: Border.all(
-                      color: Colors.white,
+                      color: Theme.of(context).colorScheme.background, //COLOR
                       width: 8,
                     ),
                   ),
                   child: Container(
                     width: 70,
                     height: 70,
-                    decoration: const BoxDecoration(
+                    decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: Colors.blue,
+                      color: Theme.of(context).colorScheme.primary, // COLOR
                     ),
                   ),
                 ),
@@ -85,7 +85,7 @@ class _HomePageState extends State<HomePage> {
           }
 
           if (!snapshot.hasData) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           }
 
           final categories = snapshot.data!.docs;
@@ -101,7 +101,7 @@ class _HomePageState extends State<HomePage> {
                 imagePath: imageURL ?? 'lib/assets/images/test/pic1.png',
                 progressValue: 0.5,
                 cardColor: Colors.blue,
-                progressColor: Colors.green,
+                progressColor: Colors.blue.shade700,
                 onTap: () => _goToSubjectLevel(
                     0), // Use document ID for navigation (optional)
               );

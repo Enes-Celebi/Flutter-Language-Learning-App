@@ -1,0 +1,145 @@
+{
+  "Collection:Subject": {
+    "subject_math": {
+      "language": "en",
+      "name": "Mathematics",
+      "image": "image url",
+      "progress": 0,
+
+      "Subcollection:Level": {
+        "level1": {
+          "image": "image url",
+          "progress": 0,
+
+          "Subcollection:Mapcards": {
+            "mapcard1": {
+              "language": "en",
+              "type": "lesson",
+              "image": "image url",
+
+              "Subcollection:Lesson": {
+                "lesson1": {
+                  "tip1": {
+                    "text": "Example tip 1 bla bla bla",
+                    "image": "image url"
+                  },
+                  "tip2": {
+                    "text": "Example tip 2 bla bla bla",
+                    "image": "image url"
+                  },
+                  "tip3": {
+                    "text": "Example tip 3 bla bla bla",
+                    "image": "image url"
+                  },
+                  "tip4": {
+                    "text": "Example tip 4 bla bla bla",
+                    "image": "image url"
+                  }
+                }
+              }
+            },
+            "mapcard2": {
+              "language": "en",
+              "type": "test",
+              "image": "image url",
+
+              "Subcollection:Test": {
+                "test1": {
+                  "question1": {
+                    "image": "image url",
+                    "question": "Example question 1 bla bla bla",
+                    "options": [
+                      {
+                        "text": "a",
+                        "correct": false
+                      },
+                      {
+                        "text": "b",
+                        "correct": true
+                      },
+                      {
+                        "text": "c",
+                        "correct": false
+                      },
+                      {
+                        "text": "d",
+                        "correct": false
+                      }
+                    ]
+                  },
+                  "question2": {
+                    "image": "image url",
+                    "question": "Example question 2 bla bla bla",
+                    "options": [
+                      {
+                        "text": "a",
+                        "correct": false
+                      },
+                      {
+                        "text": "b",
+                        "correct": true
+                      },
+                      {
+                        "text": "c",
+                        "correct": false
+                      },
+                      {
+                        "text": "d",
+                        "correct": false
+                      }
+                    ]
+                  },
+                  "question3": {
+                    "image": "image url",
+                    "question": "Example question 3 bla bla bla",
+                    "options": [
+                      {
+                        "text": "a",
+                        "correct": false
+                      },
+                      {
+                        "text": "b",
+                        "correct": true
+                      },
+                      {
+                        "text": "c",
+                        "correct": false
+                      },
+                      {
+                        "text": "d",
+                        "correct": false
+                      }
+                    ]
+                  },
+                  "question4": {
+                    "image": "image url",
+                    "question": "Example question 4 bla bla bla",
+                    "options": [
+                      {
+                        "text": "a",
+                        "correct": false
+                      },
+                      {
+                        "text": "b",
+                        "correct": true
+                      },
+                      {
+                        "text": "c",
+                        "correct": false
+                      },
+                      {
+                        "text": "d",
+                        "correct": false
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+  

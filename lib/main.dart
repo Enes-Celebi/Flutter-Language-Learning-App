@@ -1,20 +1,26 @@
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:lingoneer_beta_0_0_1/auth/login_or_register.dart';
 import 'package:lingoneer_beta_0_0_1/firebase_options.dart';
+import 'package:lingoneer_beta_0_0_1/pages/home_page.dart';
 import 'package:lingoneer_beta_0_0_1/themes/theme_provider.dart';
-import "package:provider/provider.dart";
+import 'package:firebase_core/firebase_core.dart';
+import 'package:lingoneer_beta_0_0_1/services/data_loading.dart'; // Import your DataLoader class
+import 'package:provider/provider.dart';
 
-void main() async{
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
-);
+  );
+  
+  // Call the data upload method
+  await DataLoader.loadDataToFirestore(); // Corrected method name
+  
   runApp(
     ChangeNotifierProvider(
       create: (context) => ThemeProvider(),
       child: const MyApp(),
-    )
+    ),
   );
 }
 

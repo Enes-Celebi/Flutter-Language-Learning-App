@@ -59,7 +59,7 @@ class _LoginPageState extends State<LoginPage> {
             Icon(
               Icons.lock_open_rounded,
               size: 100,
-              color: Theme.of(context).colorScheme.inversePrimary,
+              color: Theme.of(context).primaryColor,
             ),
 
             const SizedBox(height: 25),
@@ -69,7 +69,7 @@ class _LoginPageState extends State<LoginPage> {
               "Food delivery app new",
               style: TextStyle(
                 fontSize: 16,
-                color: Theme.of(context).colorScheme.inversePrimary,
+                color: Theme.of(context).primaryColor,
               ),
             ),
 
