@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:lingoneer_beta_0_0_1/firebase_options.dart';
 import 'package:lingoneer_beta_0_0_1/pages/login_page.dart';
+import 'package:lingoneer_beta_0_0_1/services/firebase_services.dart';
 import 'package:lingoneer_beta_0_0_1/themes/theme_provider.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:lingoneer_beta_0_0_1/services/data_loading.dart'; // Import your DataLoader class
 import 'package:provider/provider.dart';
 
 void main() async {
@@ -13,7 +13,7 @@ void main() async {
   );
   
   // Call the data upload method
-  await DataLoader.loadDataToFirestore(); // Corrected method name
+  await FirebaseService.loadDataToFirestore(); // Corrected method name
   
   runApp(
     ChangeNotifierProvider(
