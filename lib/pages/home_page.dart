@@ -28,7 +28,7 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: const CustomAppBar(),
       body: FutureBuilder<QuerySnapshot>(
-        future: FirebaseFirestore.instance.collection('Category').get(),
+        future: FirebaseFirestore.instance.collection('subjects').get(),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
             return Text('Error: ${snapshot.error}');
@@ -43,7 +43,7 @@ class _HomePageState extends State<HomePage> {
           return PageView(
             children: categories.map((category) {
               final title = category.get('name');
-              final imageURL = category.get('imageUrl');
+              final imageURL = category.get('image');
 
               return MyMainCard(
                 title: title ??

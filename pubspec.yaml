@@ -37,6 +37,7 @@ dependencies:
   provider: ^6.1.2 
   firebase_auth: ^4.19.1
   cloud_firestore: ^4.0.5
+  path: ^1.9.0
 
 dev_dependencies:
   flutter_test:
@@ -69,11 +70,7 @@ flutter:
     - lib/assets/images/icons/locked.png
     - lib/assets/images/test/english_flag.png
     - lib/assets/images/test/turkey_flag.png
-    - lib/tempData/subjects.json
-    - lib/tempData/levels.json
-    - lib/tempData/mapcards.json
-    - lib/tempData/lessons.json
-    - lib/tempData/tests.json
+    - lib/assets/images/icons/first_page_logo.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

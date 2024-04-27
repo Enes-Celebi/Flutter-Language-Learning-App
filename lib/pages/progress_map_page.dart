@@ -1,3 +1,4 @@
+import "package:cloud_firestore/cloud_firestore.dart";
 import "package:flutter/material.dart";
 import "package:lingoneer_beta_0_0_1/components/appbar.dart";
 import "package:lingoneer_beta_0_0_1/components/progress_map_card.dart";
@@ -41,168 +42,38 @@ class _progressMapPageState extends State<progressMapPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const CustomAppBar(),
+      body: FutureBuilder<QuerySnapshot>(
+        future: FirebaseFirestore.instance.collection('mapcards').get(),
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return Text('Error ${snapshot.error}');
+          }
 
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
+          if (!snapshot.hasData) {
+            return const Center(child: CircularProgressIndicator());
+          }
 
-            // first card
-            ProgressMapCard(
-              title: "lesson 1", 
-              lessonImagePath: 'lib/assets/images/test/pic1.png', 
-              statusImagePath: 'lib/assets/images/icons/done.png', 
-              cardColor: Colors.blue[300]!, 
-              borderColor: Colors.blue[200]!,
-              onTap: () {
-                _goToLessonPage(0);
-              },
-              alignRight: true,
-            ),
-            
-            // first card
-            ProgressMapCard(
-              title: "lesson 1", 
-              lessonImagePath: 'lib/assets/images/test/pic1.png', 
-              statusImagePath: 'lib/assets/images/icons/done.png', 
-              cardColor: Colors.blue[300]!, 
-              borderColor: Colors.blue[200]!,
-              onTap: () {
-                _goToTestPage(0);
-              },
-              alignRight: false,
-            ),
-            
-            // first card
-            ProgressMapCard(
-              title: "lesson 1", 
-              lessonImagePath: 'lib/assets/images/test/pic1.png', 
-              statusImagePath: 'lib/assets/images/icons/done.png', 
-              cardColor: Colors.blue[300]!, 
-              borderColor: Colors.blue[200]!,
-              onTap: () {
-                _goToLessonPage(0);
-              },
-              alignRight: true,
-            ),
 
-            // first card
-            ProgressMapCard(
-              title: "lesson 1", 
-              lessonImagePath: 'lib/assets/images/test/pic1.png', 
-              statusImagePath: 'lib/assets/images/icons/undone.png', 
-              cardColor: Colors.blue[600]!, 
-              borderColor: Colors.blue[400]!,
-              onTap: () {
-                _goToTestPage(0);
-              },
-              alignRight: false,
-            ),
+          final Mapcards = snapshot.data!.docs;
 
-            // first card
-            ProgressMapCard(
-              title: "lesson 1", 
-              lessonImagePath: 'lib/assets/images/test/pic1.png', 
-              statusImagePath: 'lib/assets/images/icons/locked.png', 
-              cardColor: Colors.grey, 
-              borderColor: Colors.grey[400]!,
-              onTap: () {
-                _goToLessonPage(0);
-              },
-              alignRight: true,
-            ),
+          return SingleChildScrollView(
+            child: Column(
+              children: Mapcards.map((Mapcards) {
+                final title = Mapcards.get('name');
+                final imageURL = Mapcards.get('image');
 
-            // first card
-            ProgressMapCard(
-              title: "lesson 1", 
-              lessonImagePath: 'lib/assets/images/test/pic1.png',
-              statusImagePath: 'lib/assets/images/icons/locked.png',  
-              cardColor: Colors.grey, 
-              borderColor: Colors.grey[400]!,
-              onTap: () {
-                _goToTestPage(0);
-              },
-              alignRight: false,
+                return ProgressMapCard(
+                  title: title ?? 'No Title', 
+                  lessonImagePath: imageURL ?? 'lib/assets/images/test/pic1.png', 
+                  statusImagePath: 'lib/assets/images/icons/locked.png', 
+                  cardColor: Colors.blue[200]!, 
+                  borderColor: Colors.blue[200]!, 
+                  onTap: () => _goToLessonPage(0),
+                );
+              }).toList(),
             ),
-
-            // first card
-            ProgressMapCard(
-              title: "lesson 1", 
-              lessonImagePath: 'lib/assets/images/test/pic1.png', 
-              statusImagePath: 'lib/assets/images/icons/locked.png', 
-              cardColor: Colors.grey, 
-              borderColor: Colors.grey[400]!,
-              onTap: () {
-                _goToLessonPage(0);
-              },
-              alignRight: true,
-            ),
-
-            // first card
-            ProgressMapCard(
-              title: "lesson 1", 
-              lessonImagePath: 'lib/assets/images/test/pic1.png', 
-              statusImagePath: 'lib/assets/images/icons/locked.png', 
-              cardColor: Colors.grey, 
-              borderColor: Colors.grey[400]!,
-              onTap: () {
-                _goToTestPage(0);
-              },
-              alignRight: false,
-            ),
-
-            // first card
-            ProgressMapCard(
-              title: "lesson 1", 
-              lessonImagePath: 'lib/assets/images/test/pic1.png', 
-              statusImagePath: 'lib/assets/images/icons/locked.png', 
-              cardColor: Colors.grey, 
-              borderColor: Colors.grey[400]!,
-              onTap: () {
-                _goToLessonPage(0);
-              },
-              alignRight: true,
-            ),
-
-            // first card
-            ProgressMapCard(
-              title: "lesson 1", 
-              lessonImagePath: 'lib/assets/images/test/pic1.png', 
-              statusImagePath: 'lib/assets/images/icons/locked.png', 
-              cardColor: Colors.grey, 
-              borderColor: Colors.grey[400]!,
-              onTap: () {
-                                _goToTestPage(0);
-              },
-              alignRight: false,
-            ),
-
-            // first card
-            ProgressMapCard(
-              title: "lesson 1", 
-              lessonImagePath: 'lib/assets/images/test/pic1.png', 
-              statusImagePath: 'lib/assets/images/icons/locked.png', 
-              cardColor: Colors.grey, 
-              borderColor: Colors.grey[400]!,
-              onTap: () {
-                _goToLessonPage(0);
-              },
-              alignRight: true,
-            ),
-
-            
-            ProgressMapCard(
-              title: "lesson 1", 
-              lessonImagePath: 'lib/assets/images/test/pic1.png', 
-              statusImagePath: 'lib/assets/images/icons/locked.png', 
-              cardColor: Colors.grey, 
-              borderColor: Colors.grey[400]!,
-              onTap: () {
-                _goToTestPage(0);
-              },
-              alignRight: false,
-            ),
-          ],
-        ),
+          );
+        },
       ),
 
       floatingActionButton: FloatingActionButton(
