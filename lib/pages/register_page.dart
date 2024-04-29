@@ -4,6 +4,8 @@ import "package:lingoneer_beta_0_0_1/components/my_button.dart";
 import "package:lingoneer_beta_0_0_1/components/my_textfield.dart";
 import "package:lingoneer_beta_0_0_1/pages/home_page.dart";
 import "package:lingoneer_beta_0_0_1/pages/login_page.dart";
+import "package:lingoneer_beta_0_0_1/services/language_provider.dart";
+import "package:provider/provider.dart";
 
 class RegisterPage extends StatefulWidget {
 
@@ -26,6 +28,8 @@ class _RegisterPageState extends State<RegisterPage> {
   void signup() async {
     if (passwordController.text == confirmPasswordController.text){
       try {
+        
+    final languageProvider = Provider.of<LanguageProvider>(context);
     final user = await _auth.createUserWithEmailAndPassword(
       email: emailController.text.trim(),
       password: passwordController.text,
@@ -65,6 +69,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
       body: Center(
