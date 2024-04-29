@@ -66,7 +66,7 @@ class _progressMapPageState extends State<progressMapPage> {
                   title: title ?? 'No Title', 
                   lessonImagePath: imageURL ?? 'lib/assets/images/test/pic1.png', 
                   statusImagePath: 'lib/assets/images/icons/locked.png', 
-                  cardColor: Colors.blue[200]!, 
+                  cardColor: Colors.blue[300]!, 
                   borderColor: Colors.blue[200]!, 
                   onTap: () => _goToLessonPage(0),
                 );

@@ -3,6 +3,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:lingoneer_beta_0_0_1/components/appbar.dart';
 import 'package:lingoneer_beta_0_0_1/components/my_main_card.dart';
 import 'package:lingoneer_beta_0_0_1/pages/subject_level_page.dart';
+import 'package:lingoneer_beta_0_0_1/services/language_provider.dart';
+import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -25,10 +27,15 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final languageProvider = Provider.of<LanguageProvider>(context);
+
     return Scaffold(
       appBar: const CustomAppBar(),
       body: FutureBuilder<QuerySnapshot>(
-        future: FirebaseFirestore.instance.collection('subjects').get(),
+        future: FirebaseFirestore.instance
+        .collection('subjects')
+        .where('language', isEqualTo: languageProvider.languageComb)
+        .get(),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
             return Text('Error: ${snapshot.error}');

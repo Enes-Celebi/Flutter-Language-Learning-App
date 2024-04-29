@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:lingoneer_beta_0_0_1/pages/home_page.dart';
-import 'package:lingoneer_beta_0_0_1/pages/login_page.dart';
+import 'package:lingoneer_beta_0_0_1/pages/first_time/language_selection.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -16,10 +15,21 @@ class _SplashScreenState extends State<SplashScreen> {
     _navigatetohome();
   }
 
-  _navigatetohome()async{
-    await Future.delayed(const Duration(milliseconds: 2500), (){});
-    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const LoginPage(onTap: null)));
-  }
+  _navigatetohome() async {
+  await Future.delayed(const Duration(milliseconds: 2500), () {});
+  Navigator.pushReplacement(
+    context,
+    MaterialPageRoute(
+      // builder: (context) => LanguageSelection(
+      //   onLanguageSelected: (selectedLanguageData) {
+      //     // nothing just trolling hehehe
+      //   },
+      // ),
+      builder: (context) => LanguageSelection()
+      ),
+    );
+}
+
 
   @override
   Widget build(BuildContext context) {
