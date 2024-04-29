@@ -38,6 +38,7 @@ dependencies:
   firebase_auth: ^4.19.1
   cloud_firestore: ^4.0.5
   path: ^1.9.0
+  shared_preferences: ^2.0.9
 
 dev_dependencies:
   flutter_test:
@@ -63,20 +64,9 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-    - lib/assets/images/test/pic1.png
-    - lib/assets/images/test/math.png
-    - lib/assets/images/icons/done.png
-    - lib/assets/images/icons/undone.png
-    - lib/assets/images/icons/locked.png
-    - lib/assets/images/test/english_flag.png
-    - lib/assets/images/test/turkey_flag.png
-    - lib/assets/images/icons/first_page_logo.png
-    - lib/assets/images/flags/palestine.png
-    - lib/assets/images/flags/united-states.png
-    - lib/assets/images/flags/turkey.png
-    - lib/assets/images/flags/italy.png
-    - lib/assets/images/flags/france.png
-    - lib/assets/images/flags/egypt.png
+    - lib/assets/images/test/
+    - lib/assets/images/icons/
+    - lib/assets/images/flags/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

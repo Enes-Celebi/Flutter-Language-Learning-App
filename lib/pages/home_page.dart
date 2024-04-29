@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:lingoneer_beta_0_0_1/components/appbar.dart';
@@ -5,6 +6,7 @@ import 'package:lingoneer_beta_0_0_1/components/my_main_card.dart';
 import 'package:lingoneer_beta_0_0_1/pages/subject_level_page.dart';
 import 'package:lingoneer_beta_0_0_1/services/language_provider.dart';
 import 'package:provider/provider.dart';
+
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -25,16 +27,48 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+
   @override
   Widget build(BuildContext context) {
-    final languageProvider = Provider.of<LanguageProvider>(context);
+    Provider.of<LanguageProvider>(context);
+    final FirebaseAuth _auth = FirebaseAuth.instance;
+    User? user = _auth.currentUser;
 
+  
     return Scaffold(
       appBar: const CustomAppBar(),
       body: FutureBuilder<QuerySnapshot>(
         future: FirebaseFirestore.instance
+            .collection('Users')
+            .where('email', isEqualTo: user?.email) // Assuming the user document ID is the UID
+            .get(),
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return Text('Error: ${snapshot.error}');
+          }
+
+          if (!snapshot.hasData) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          QuerySnapshot userData = snapshot.data!;
+          if (userData.docs.isEmpty) {
+            return const Text('User document not found');
+          }
+
+          final DocumentSnapshot userDoc = userData.docs.first;
+          final userDataMap = userDoc.data() as Map<String, dynamic>;
+          if (!userDataMap.containsKey('language')) {
+            return const Text('Language not found');
+          }
+
+          final String language = userDataMap['language'];
+
+          
+        return FutureBuilder<QuerySnapshot>(        
+        future: FirebaseFirestore.instance
         .collection('subjects')
-        .where('language', isEqualTo: languageProvider.languageComb)
+        .where('language', isEqualTo: language)
         .get(),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
@@ -44,6 +78,7 @@ class _HomePageState extends State<HomePage> {
           if (!snapshot.hasData) {
             return const Center(child: CircularProgressIndicator());
           }
+          
 
           final categories = snapshot.data!.docs;
 
@@ -63,6 +98,8 @@ class _HomePageState extends State<HomePage> {
                     0), // Use document ID for navigation (optional)
               );
             }).toList(),
+          );
+            },
           );
         },
       ),
