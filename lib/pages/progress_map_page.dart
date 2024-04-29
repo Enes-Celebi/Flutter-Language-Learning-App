@@ -6,19 +6,20 @@ import "package:lingoneer_beta_0_0_1/pages/lesson_page.dart";
 import "package:lingoneer_beta_0_0_1/pages/test_page.dart";
 
 class progressMapPage extends StatefulWidget {
-  final int selectedCardIndex;
+  final String selectedCardIndex;
 
   const progressMapPage({
     super.key,
     required this.selectedCardIndex
   });
+  // tr2en whole
+  // ar2tr fizik
 
   @override
   State<progressMapPage> createState() => _progressMapPageState();
 }
 
 class _progressMapPageState extends State<progressMapPage> {
-  int selectedCardIndex = -1;
 
   void _goToLessonPage(int index) {
     Navigator.push(
@@ -43,7 +44,10 @@ class _progressMapPageState extends State<progressMapPage> {
     return Scaffold(
       appBar: const CustomAppBar(),
       body: FutureBuilder<QuerySnapshot>(
-        future: FirebaseFirestore.instance.collection('mapcards').get(),
+        future: FirebaseFirestore.instance
+        .collection('mapcards')
+        .where('level', isEqualTo: widget.selectedCardIndex)
+        .get(),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
             return Text('Error ${snapshot.error}');
@@ -61,6 +65,7 @@ class _progressMapPageState extends State<progressMapPage> {
               children: Mapcards.map((Mapcards) {
                 final title = Mapcards.get('name');
                 final imageURL = Mapcards.get('image');
+                final alignRight = Mapcards.get('type') == 'lesson';
 
                 return ProgressMapCard(
                   title: title ?? 'No Title', 
@@ -69,6 +74,7 @@ class _progressMapPageState extends State<progressMapPage> {
                   cardColor: Colors.blue[300]!, 
                   borderColor: Colors.blue[200]!, 
                   onTap: () => _goToLessonPage(0),
+                  alignRight: alignRight,
                 );
               }).toList(),
             ),

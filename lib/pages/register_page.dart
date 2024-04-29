@@ -29,12 +29,12 @@ class _RegisterPageState extends State<RegisterPage> {
   void signup(BuildContext context) async {
     if (passwordController.text == confirmPasswordController.text) {
       try {
-        // final languageProvider = Provider.of<LanguageProvider>(context);
+    // final languageProvider = Provider.of<LanguageProvider>(context);
 
-        final user = await _auth.createUserWithEmailAndPassword(
-          email: emailController.text.trim(),
-          password: passwordController.text,
-        );
+    final user = await _auth.createUserWithEmailAndPassword(
+      email: emailController.text.trim(),
+      password: passwordController.text,
+    );
 
         // ignore: unnecessary_null_comparison
         if (user != null) {
@@ -78,9 +78,6 @@ class _RegisterPageState extends State<RegisterPage> {
 
   @override
   Widget build(BuildContext context) {
-    final languageProvider = Provider.of<LanguageProvider>(context);
-    print(languageProvider.languageComb);
-    print("===================al0000000000000000");
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
       body: Center(

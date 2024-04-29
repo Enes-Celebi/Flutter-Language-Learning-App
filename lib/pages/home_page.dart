@@ -9,7 +9,7 @@ import 'package:provider/provider.dart';
 
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  const HomePage({Key? key});
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -18,11 +18,11 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   int selectedCardIndex = -1;
 
-  void _goToSubjectLevel(int index) {
+  void _goToSubjectLevel(String subjectId) {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => subjectLevelPage(selectedCardIndex: index),
+        builder: (context) => subjectLevelPage(selectedCardIndex: subjectId),
       ),
     );
   }
@@ -86,6 +86,7 @@ class _HomePageState extends State<HomePage> {
             children: categories.map((category) {
               final title = category.get('name');
               final imageURL = category.get('image');
+              final subjectId = category.get('id'); // Document ID
 
               return MyMainCard(
                 title: title ??
@@ -94,8 +95,7 @@ class _HomePageState extends State<HomePage> {
                 progressValue: 0.5,
                 cardColor: Colors.blue,
                 progressColor: Colors.blue.shade700,
-                onTap: () => _goToSubjectLevel(
-                    0), // Use document ID for navigation (optional)
+                onTap: () => _goToSubjectLevel(subjectId),
               );
             }).toList(),
           );
