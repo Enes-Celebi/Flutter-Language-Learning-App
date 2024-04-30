@@ -9,7 +9,7 @@ import 'package:provider/provider.dart';
 
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key});
+  const HomePage({super.key});
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -31,16 +31,17 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     Provider.of<LanguageProvider>(context);
-    final FirebaseAuth _auth = FirebaseAuth.instance;
-    User? user = _auth.currentUser;
+    //final FirebaseAuth _auth = FirebaseAuth.instance;
+    final languageProvider = Provider.of<LanguageProvider>(context);
+    //User? user = _auth.currentUser;
 
   
     return Scaffold(
       appBar: const CustomAppBar(),
       body: FutureBuilder<QuerySnapshot>(
         future: FirebaseFirestore.instance
-            .collection('Users')
-            .where('email', isEqualTo: user?.email) // Assuming the user document ID is the UID
+            .collection('subjects')
+            .where('language', isEqualTo: languageProvider.languageComb) // Assuming the user document ID is the UID
             .get(),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
@@ -51,24 +52,24 @@ class _HomePageState extends State<HomePage> {
             return const Center(child: CircularProgressIndicator());
           }
 
-          QuerySnapshot userData = snapshot.data!;
-          if (userData.docs.isEmpty) {
-            return const Text('User document not found');
-          }
+          // QuerySnapshot userData = snapshot.data!;
+          // if (userData.docs.isEmpty) {
+          //   return const Text('User document not found');
+          // }
 
-          final DocumentSnapshot userDoc = userData.docs.first;
-          final userDataMap = userDoc.data() as Map<String, dynamic>;
-          if (!userDataMap.containsKey('language')) {
-            return const Text('Language not found');
-          }
+          // final DocumentSnapshot userDoc = userData.docs.first;
+          // final userDataMap = userDoc.data() as Map<String, dynamic>;
+          // if (!userDataMap.containsKey('language')) {
+          //   return const Text('Language not found');
+          // }
 
-          final String language = userDataMap['language'];
+          //final String language = userDataMap['language'];
 
           
         return FutureBuilder<QuerySnapshot>(        
         future: FirebaseFirestore.instance
         .collection('subjects')
-        .where('language', isEqualTo: language)
+        .where('language', isEqualTo: languageProvider.languageComb)
         .get(),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
