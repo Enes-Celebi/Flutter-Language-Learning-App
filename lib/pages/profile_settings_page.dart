@@ -85,7 +85,7 @@ class SettingsPage extends StatelessWidget {
       body: ListView(
         children: [
           ListTile(
-            title: const Text('General'),
+            title: const Text('Account'),
             trailing: const Icon(Icons.chevron_right),
             onTap: () {
               // Navigate to a separate general settings page (optional)

@@ -1,6 +1,7 @@
 import "package:cloud_firestore/cloud_firestore.dart";
 import "package:flutter/material.dart";
 import "package:lingoneer_beta_0_0_1/components/first_time_flag.dart";
+import "package:lingoneer_beta_0_0_1/pages/login_page.dart";
 import "package:lingoneer_beta_0_0_1/pages/register_page.dart";
 import "package:lingoneer_beta_0_0_1/services/language_provider.dart";
 import "package:provider/provider.dart";
@@ -13,7 +14,6 @@ class IntendedLanguageSelection extends StatefulWidget {
 }
 
 class _IntendedLanguageSelectionState extends State<IntendedLanguageSelection> {
-  String? _intendedSelectedLanguage;
 
   void _proceedToApp(Map<String, dynamic> languageData) {
     final language = languageData['language'];
@@ -21,10 +21,6 @@ class _IntendedLanguageSelectionState extends State<IntendedLanguageSelection> {
 
     final languageProvider = Provider.of<LanguageProvider>(context, listen: false);
     languageProvider.setIntendedSelectedLanguage(language); // Use setIntendedSelectedLanguage here
-
-    setState(() {
-      _intendedSelectedLanguage = language;
-    });
 
     Navigator.push(
       context,
@@ -82,7 +78,7 @@ class _IntendedLanguageSelectionState extends State<IntendedLanguageSelection> {
                     child: Center( // Center the text horizontally
                       child: Text(
                         // Access 'name' from the document data
-                        'Choose your language',
+                        'Choose language do you want to learn',
                         style: TextStyle(
                           fontSize: 18,
                         ),
@@ -97,8 +93,10 @@ class _IntendedLanguageSelectionState extends State<IntendedLanguageSelection> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // Navigate back to home screen
-          //_proceedToApp(data);
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const LoginPage(onTap:null,)),
+          );
         },
         child: const Icon(Icons.arrow_back),
       ),

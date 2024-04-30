@@ -2,6 +2,7 @@ import "package:cloud_firestore/cloud_firestore.dart";
 import "package:flutter/material.dart";
 import "package:lingoneer_beta_0_0_1/components/first_time_flag.dart";
 import "package:lingoneer_beta_0_0_1/pages/first_time/intended_language_selection.dart";
+import "package:lingoneer_beta_0_0_1/pages/login_page.dart";
 import "package:lingoneer_beta_0_0_1/services/language_provider.dart";
 import "package:provider/provider.dart";
 
@@ -98,8 +99,10 @@ class _LanguageSelectionState extends State<LanguageSelection> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // Navigate back to home screen
-          // _proceedToApp();
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const LoginPage(onTap:null,)),
+          );
         },
         child: const Icon(Icons.arrow_back),
       ),

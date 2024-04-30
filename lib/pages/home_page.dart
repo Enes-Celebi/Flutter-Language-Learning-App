@@ -27,6 +27,66 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+void _checkUsername(User? user) async {
+  if (user != null) {
+    final userData = await FirebaseFirestore.instance
+        .collection('Users')
+        .where('email', isEqualTo: user.email)
+        .get();
+
+    if (userData.docs.isNotEmpty) {
+      // User document found, check if username is set
+      final userDoc = userData.docs.first;
+      final userDataMap = userDoc.data() as Map<String, dynamic>;
+
+      if (!userDataMap.containsKey('username') ||
+          userDataMap['username'] == null ||
+          userDataMap['username'].isEmpty) {
+        // Username not found or empty, prompt to set username
+        await showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            String newUsername = '';
+            return AlertDialog(
+              title: const Text('Set Username'),
+              content: TextField(
+                onChanged: (value) => newUsername = value,
+                decoration: const InputDecoration(hintText: 'Enter Username'),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text('Cancel'),
+                ),
+                TextButton(
+                  onPressed: () async {
+                    if (newUsername.isNotEmpty) {
+                      // Save the new username to Firestore
+                      await FirebaseFirestore.instance
+                          .collection('Users')
+                          .doc(user.uid)
+                          .set({'username': newUsername}, SetOptions(merge: true));
+                      Navigator.pop(context);
+                    } else {
+                      // Show an error message if the username is empty
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Please enter a valid username.'),
+                        ),
+                      );
+                    }
+                  },
+                  child: const Text('Save'),
+                ),
+              ],
+            );
+          },
+        );
+      }
+    }
+  }
+}
+
 
   @override
   Widget build(BuildContext context) {
@@ -34,13 +94,15 @@ class _HomePageState extends State<HomePage> {
     final FirebaseAuth _auth = FirebaseAuth.instance;
     User? user = _auth.currentUser;
 
+    _checkUsername(user!);
+
   
     return Scaffold(
       appBar: const CustomAppBar(),
       body: FutureBuilder<QuerySnapshot>(
         future: FirebaseFirestore.instance
             .collection('Users')
-            .where('email', isEqualTo: user?.email) // Assuming the user document ID is the UID
+            .where('email', isEqualTo: user.email) 
             .get(),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
@@ -65,7 +127,7 @@ class _HomePageState extends State<HomePage> {
           final String language = userDataMap['language'];
 
           
-        return FutureBuilder<QuerySnapshot>(        
+        return FutureBuilder<QuerySnapshot>(       
         future: FirebaseFirestore.instance
         .collection('subjects')
         .where('language', isEqualTo: language)
