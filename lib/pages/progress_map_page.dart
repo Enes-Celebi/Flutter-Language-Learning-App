@@ -6,34 +6,35 @@ import "package:lingoneer_beta_0_0_1/pages/lesson_page.dart";
 import "package:lingoneer_beta_0_0_1/pages/test_page.dart";
 
 class progressMapPage extends StatefulWidget {
-  final int selectedCardIndex;
+  final String selectedCardIndex;
 
   const progressMapPage({
     super.key,
     required this.selectedCardIndex
   });
+  // tr2en whole
+  // ar2tr fizik
 
   @override
   State<progressMapPage> createState() => _progressMapPageState();
 }
 
 class _progressMapPageState extends State<progressMapPage> {
-  int selectedCardIndex = -1;
 
-  void _goToLessonPage(int index) {
+  void _goToLessonPage(String mapcardId) {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => LessonPage(selectedCardIndex: index),
+        builder: (context) => LessonPage(selectedCardIndex: mapcardId)
       ),
     );
   }
 
-  void _goToTestPage(int index) {
+  void _goToTestPage(String mapcardId) {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => TestPage(selectedCardIndex: index),
+        builder: (context) => TestPage(selectedCardIndex: mapcardId),
       ),
     );
   }
@@ -43,7 +44,10 @@ class _progressMapPageState extends State<progressMapPage> {
     return Scaffold(
       appBar: const CustomAppBar(),
       body: FutureBuilder<QuerySnapshot>(
-        future: FirebaseFirestore.instance.collection('mapcards').get(),
+        future: FirebaseFirestore.instance
+        .collection('mapcards')
+        .where('level', isEqualTo: widget.selectedCardIndex)
+        .get(),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
             return Text('Error ${snapshot.error}');
@@ -61,6 +65,8 @@ class _progressMapPageState extends State<progressMapPage> {
               children: Mapcards.map((Mapcards) {
                 final title = Mapcards.get('name');
                 final imageURL = Mapcards.get('image');
+                final alignRight = Mapcards.get('type') == 'lesson';
+                final mapcardId = Mapcards.get('id');
 
                 return ProgressMapCard(
                   title: title ?? 'No Title', 
@@ -68,7 +74,8 @@ class _progressMapPageState extends State<progressMapPage> {
                   statusImagePath: 'lib/assets/images/icons/locked.png', 
                   cardColor: Colors.blue[300]!, 
                   borderColor: Colors.blue[200]!, 
-                  onTap: () => _goToLessonPage(0),
+                  onTap: () => _goToLessonPage(mapcardId),
+                  alignRight: alignRight,
                 );
               }).toList(),
             ),

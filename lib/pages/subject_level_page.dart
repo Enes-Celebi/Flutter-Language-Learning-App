@@ -3,12 +3,10 @@ import "package:flutter/material.dart";
 import "package:lingoneer_beta_0_0_1/components/appbar.dart";
 import "package:lingoneer_beta_0_0_1/components/subject_level_card.dart";
 import "package:lingoneer_beta_0_0_1/pages/progress_map_page.dart";
-import "package:lingoneer_beta_0_0_1/services/language_provider.dart";
-import "package:provider/provider.dart";
 
 
 class subjectLevelPage extends StatefulWidget {
-  final int selectedCardIndex;
+  final String selectedCardIndex;
 
   const subjectLevelPage({
     super.key,
@@ -20,27 +18,25 @@ class subjectLevelPage extends StatefulWidget {
 }
 
 class _SubjectLevelPageState extends State<subjectLevelPage> {
-  int selectedCardIndex = -1;
 
-  void _goToProgressMapPage(int index) {
+  void _goToProgressMapPage(String levelId) {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => progressMapPage(selectedCardIndex: index)
+        builder: (context) => progressMapPage(selectedCardIndex: levelId)
       ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    final languageProvider = Provider.of<LanguageProvider>(context);
 
     return Scaffold(
       appBar: const CustomAppBar(),
       body: FutureBuilder<QuerySnapshot>(
         future: FirebaseFirestore.instance
         .collection('levels')
-        .where('language', isEqualTo: languageProvider.languageComb)
+        .where('subject', isEqualTo: widget.selectedCardIndex)
         .get(),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
@@ -58,6 +54,7 @@ class _SubjectLevelPageState extends State<subjectLevelPage> {
               children: Levels.map((Levels) {
                 final title = Levels.get('name');
                 final imageURL = Levels.get('image');
+                final levelId = Levels.get('id');
 
                 return SubjectLevelCard(
                   title: title ?? 'No Title', // Set default title if "name" is missing
@@ -65,8 +62,7 @@ class _SubjectLevelPageState extends State<subjectLevelPage> {
                   progressValue: 0.5,
                   cardColor: Colors.blue,
                   progressColor: Colors.blue.shade700,
-                  onTap: () => _goToProgressMapPage(
-                      0), // Use document ID for navigation (optional)
+                  onTap: () => _goToProgressMapPage(levelId), // Use document ID for navigation (optional)
                 );
               }).toList(),
             ),
