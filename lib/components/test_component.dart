@@ -1,19 +1,21 @@
 import 'package:flutter/material.dart';
 
-class LessonComponent extends StatelessWidget {
-  final String explanation;
+class TestComponent extends StatelessWidget {
+  final String question;
   final String? imageUrl;
   final String? audioUrl;
+  //final List<String> options; // Updated to list of strings
   final VoidCallback onBackButtonPressed;
   final double progress;
 
-  const LessonComponent({
+  const TestComponent({
     super.key,
-    required this.explanation,
+    required this.question,
     required this.imageUrl,
     required this.audioUrl,
-    required this.onBackButtonPressed,
+    //required this.options,
     required this.progress,
+    required this.onBackButtonPressed
   });
 
   @override
@@ -38,7 +40,7 @@ class LessonComponent extends StatelessWidget {
                   const SizedBox(height: 20),
                   _buildQuestionContent(),
                   const SizedBox(height: 20),
-                  Text(explanation),
+                  Text(question),
                 ],
               ),
             ),
