@@ -21,20 +21,20 @@ class progressMapPage extends StatefulWidget {
 
 class _progressMapPageState extends State<progressMapPage> {
 
-  void _goToLessonPage(int index) {
+  void _goToLessonPage(String mapcardId) {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => LessonPage(selectedCardIndex: index),
+        builder: (context) => LessonPage(selectedCardIndex: mapcardId)
       ),
     );
   }
 
-  void _goToTestPage(int index) {
+  void _goToTestPage(String mapcardId) {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => TestPage(selectedCardIndex: index),
+        builder: (context) => TestPage(selectedCardIndex: mapcardId),
       ),
     );
   }
@@ -66,6 +66,7 @@ class _progressMapPageState extends State<progressMapPage> {
                 final title = Mapcards.get('name');
                 final imageURL = Mapcards.get('image');
                 final alignRight = Mapcards.get('type') == 'lesson';
+                final mapcardId = Mapcards.get('id');
 
                 return ProgressMapCard(
                   title: title ?? 'No Title', 
@@ -73,7 +74,7 @@ class _progressMapPageState extends State<progressMapPage> {
                   statusImagePath: 'lib/assets/images/icons/locked.png', 
                   cardColor: Colors.blue[300]!, 
                   borderColor: Colors.blue[200]!, 
-                  onTap: () => _goToLessonPage(0),
+                  onTap: () => _goToLessonPage(mapcardId),
                   alignRight: alignRight,
                 );
               }).toList(),

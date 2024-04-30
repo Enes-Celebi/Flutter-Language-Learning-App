@@ -3,8 +3,6 @@ import "package:flutter/material.dart";
 import "package:lingoneer_beta_0_0_1/components/appbar.dart";
 import "package:lingoneer_beta_0_0_1/components/subject_level_card.dart";
 import "package:lingoneer_beta_0_0_1/pages/progress_map_page.dart";
-import "package:lingoneer_beta_0_0_1/services/language_provider.dart";
-import "package:provider/provider.dart";
 
 
 class subjectLevelPage extends StatefulWidget {
@@ -32,7 +30,6 @@ class _SubjectLevelPageState extends State<subjectLevelPage> {
 
   @override
   Widget build(BuildContext context) {
-    final languageProvider = Provider.of<LanguageProvider>(context);
 
     return Scaffold(
       appBar: const CustomAppBar(),

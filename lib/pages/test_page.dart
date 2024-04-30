@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 
 class TestPage extends StatefulWidget {
-  const TestPage({Key? key, required this.selectedCardIndex}) : super(key: key);
+  final String selectedCardIndex;
 
-  final int selectedCardIndex;
+  const TestPage({
+    super.key, 
+    required this.selectedCardIndex
+  });
 
   @override
   State<TestPage> createState() => _TestPageState();
