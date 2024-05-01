@@ -10,22 +10,19 @@ class progressMapPage extends StatefulWidget {
 
   const progressMapPage({
     super.key,
-    required this.selectedCardIndex
+    required this.selectedCardIndex,
   });
-  // tr2en whole
-  // ar2tr fizik
 
   @override
   State<progressMapPage> createState() => _progressMapPageState();
 }
 
 class _progressMapPageState extends State<progressMapPage> {
-
   void _goToLessonPage(String mapcardId) {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => LessonPage(selectedCardIndex: mapcardId)
+        builder: (context) => LessonPage(selectedCardIndex: mapcardId),
       ),
     );
   }
@@ -45,9 +42,9 @@ class _progressMapPageState extends State<progressMapPage> {
       appBar: const CustomAppBar(),
       body: FutureBuilder<QuerySnapshot>(
         future: FirebaseFirestore.instance
-        .collection('mapcards')
-        .where('level', isEqualTo: widget.selectedCardIndex)
-        .get(),
+            .collection('mapcards')
+            .where('level', isEqualTo: widget.selectedCardIndex)
+            .get(),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
             return Text('Error ${snapshot.error}');
@@ -57,32 +54,38 @@ class _progressMapPageState extends State<progressMapPage> {
             return const Center(child: CircularProgressIndicator());
           }
 
-
-          final Mapcards = snapshot.data!.docs;
+          final mapCards = snapshot.data!.docs;
 
           return SingleChildScrollView(
             child: Column(
-              children: Mapcards.map((Mapcards) {
-                final title = Mapcards.get('name');
-                final imageURL = Mapcards.get('image');
-                final alignRight = Mapcards.get('type') == 'lesson';
-                final mapcardId = Mapcards.get('id');
+              children: mapCards.map((mapCard) {
+                final title = mapCard.get('name');
+                final imageURL = mapCard.get('image');
+                final type = mapCard.get('type');
+                final mapCardId = mapCard.get('id');
 
                 return ProgressMapCard(
-                  title: title ?? 'No Title', 
-                  lessonImagePath: imageURL ?? 'lib/assets/images/test/pic1.png', 
-                  statusImagePath: 'lib/assets/images/icons/locked.png', 
-                  cardColor: Colors.blue[300]!, 
-                  borderColor: Colors.blue[200]!, 
-                  onTap: () => _goToTestPage(mapcardId),
-                  alignRight: alignRight,
+                  title: title ?? 'No Title',
+                  lessonImagePath: imageURL ?? 'lib/assets/images/test/pic1.png',
+                  statusImagePath: 'lib/assets/images/icons/locked.png',
+                  cardColor: Colors.blue[300]!,
+                  borderColor: Colors.blue[200]!,
+                  onTap: () {
+                    if (type == 'lesson') {
+                      _goToLessonPage(mapCardId);
+                    } else if (type == 'test') {
+                      _goToTestPage(mapCardId);
+                    } else {
+                      // Handle other types if needed
+                    }
+                  },
+                  alignRight: type == 'lesson', // Align right if type is lesson
                 );
               }).toList(),
             ),
           );
         },
       ),
-
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           // Navigate back to home screen

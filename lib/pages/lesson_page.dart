@@ -23,7 +23,7 @@ class _LessonPageState extends State<LessonPage> {
     return Scaffold(
       body: FutureBuilder<QuerySnapshot>(
         future: FirebaseFirestore.instance
-            .collection('tests')
+            .collection('lessons')
             .where('mapcard', isEqualTo: widget.selectedCardIndex)
             .get(),
         builder: (context, snapshot) {
@@ -35,6 +35,8 @@ class _LessonPageState extends State<LessonPage> {
             return const Center(child: CircularProgressIndicator());
           }
 
+          
+
           _lessonData = snapshot.data!.docs.map((doc) => doc.data() as Map<String, dynamic>).toList();
 
           return Column(
@@ -44,14 +46,7 @@ class _LessonPageState extends State<LessonPage> {
                   explanation: _lessonData[_currentIndex]['explanation'] ?? '',
                   imageUrl: _lessonData[_currentIndex]['image'] ?? null,
                   audioUrl: _lessonData[_currentIndex]['audio'] ?? null,
-                  onBackButtonPressed: () {
-                    if (_currentIndex > 0) {
-                      setState(() {
-                        _currentIndex--;
-                      });
-                    }
-                  },
-                  progress: _currentIndex / _lessonData.length,
+                  progress: (_currentIndex + 1) / _lessonData.length,
                 ),
               ),
               Row(

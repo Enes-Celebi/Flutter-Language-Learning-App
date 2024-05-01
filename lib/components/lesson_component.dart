@@ -4,7 +4,6 @@ class LessonComponent extends StatelessWidget {
   final String explanation;
   final String? imageUrl;
   final String? audioUrl;
-  final VoidCallback onBackButtonPressed;
   final double progress;
 
   const LessonComponent({
@@ -12,39 +11,40 @@ class LessonComponent extends StatelessWidget {
     required this.explanation,
     required this.imageUrl,
     required this.audioUrl,
-    required this.onBackButtonPressed,
     required this.progress,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Column(
-        children: [
-          LinearProgressIndicator(value: progress),
-          AppBar(
-            leading: IconButton(
-              icon: const Icon(Icons.arrow_back),
-              onPressed: onBackButtonPressed,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        const SizedBox(height: 50),
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: LinearProgressIndicator(
+            value: progress,
+            minHeight: 15,
+            backgroundColor: Colors.grey[300],
+            valueColor: const AlwaysStoppedAnimation<Color>(Colors.blue),
+            borderRadius: BorderRadius.circular(10),
+          )
+        ),
+        const SizedBox(height: 16),
+        Expanded(
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const SizedBox(height: 20),
+                _buildQuestionContent(),
+                const SizedBox(height: 20),
+                Text(explanation),
+              ],
             ),
-            title: const Text('Lesson'),
           ),
-          Expanded(
-            child: SingleChildScrollView(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  const SizedBox(height: 20),
-                  _buildQuestionContent(),
-                  const SizedBox(height: 20),
-                  Text(explanation),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
@@ -84,3 +84,6 @@ class LessonComponent extends StatelessWidget {
         : Image.asset('lib/assets/images/flags/egypt.png'); // Local image asset path
   }
 }
+
+
+
