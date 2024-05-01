@@ -4,33 +4,27 @@ class TestComponent extends StatelessWidget {
   final String question;
   final String? imageUrl;
   final String? audioUrl;
-  //final List<String> options; // Updated to list of strings
-  final VoidCallback onBackButtonPressed;
+  final List<String> options; // Adding options
   final double progress;
 
   const TestComponent({
-    super.key,
+    Key? key,
     required this.question,
     required this.imageUrl,
     required this.audioUrl,
-    //required this.options,
+    required this.options, // Adding options
     required this.progress,
-    required this.onBackButtonPressed
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text('Test'),
+      ),
       body: Column(
         children: [
           LinearProgressIndicator(value: progress),
-          AppBar(
-            leading: IconButton(
-              icon: const Icon(Icons.arrow_back),
-              onPressed: onBackButtonPressed,
-            ),
-            title: const Text('Lesson'),
-          ),
           Expanded(
             child: SingleChildScrollView(
               child: Column(
@@ -41,6 +35,8 @@ class TestComponent extends StatelessWidget {
                   _buildQuestionContent(),
                   const SizedBox(height: 20),
                   Text(question),
+                  const SizedBox(height: 20),
+                  _buildOptions(), // Adding options
                 ],
               ),
             ),
@@ -84,5 +80,13 @@ class TestComponent extends StatelessWidget {
     return imageUrl != null
         ? Image.network(url)
         : Image.asset('lib/assets/images/flags/egypt.png'); // Local image asset path
+  }
+
+  Widget _buildOptions() {
+    return Column(
+      children: options.map((option) {
+        return Text(option);
+      }).toList(),
+    );
   }
 }

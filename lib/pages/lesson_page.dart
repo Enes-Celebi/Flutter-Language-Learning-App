@@ -23,8 +23,8 @@ class _LessonPageState extends State<LessonPage> {
     return Scaffold(
       body: FutureBuilder<QuerySnapshot>(
         future: FirebaseFirestore.instance
-            .collection('lessons')
-            //.where('mapcard', isEqualTo: widget.selectedCardIndex)
+            .collection('tests')
+            .where('mapcard', isEqualTo: widget.selectedCardIndex)
             .get(),
         builder: (context, snapshot) {
           if (snapshot.hasError) {

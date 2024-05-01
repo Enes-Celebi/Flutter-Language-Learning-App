@@ -74,7 +74,7 @@ class _progressMapPageState extends State<progressMapPage> {
                   statusImagePath: 'lib/assets/images/icons/locked.png', 
                   cardColor: Colors.blue[300]!, 
                   borderColor: Colors.blue[200]!, 
-                  onTap: () => _goToLessonPage(mapcardId),
+                  onTap: () => _goToTestPage(mapcardId),
                   alignRight: alignRight,
                 );
               }).toList(),
