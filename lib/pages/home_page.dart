@@ -9,7 +9,7 @@ import 'package:provider/provider.dart';
 
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key});
+  const HomePage({super.key});
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -117,19 +117,19 @@ void _checkUsername(User? user) async {
             return const Text('User document not found!');
           }
 
-          final DocumentSnapshot userDoc = userData.docs.first;
-          final userDataMap = userDoc.data() as Map<String, dynamic>;
-          if (!userDataMap.containsKey('language')) {
-            return const Text('Language not found');
-          }
+          // final DocumentSnapshot userDoc = userData.docs.first;
+          // final userDataMap = userDoc.data() as Map<String, dynamic>;
+          // if (!userDataMap.containsKey('language')) {
+          //   return const Text('Language not found');
+          // }
 
-          final String language = userDataMap['language'];
+          //final String language = userDataMap['language'];
 
           
         return FutureBuilder<QuerySnapshot>(       
         future: FirebaseFirestore.instance
         .collection('subjects')
-        .where('language', isEqualTo: language)
+        .where('language', isEqualTo: languageProvider.languageComb)
         .get(),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
