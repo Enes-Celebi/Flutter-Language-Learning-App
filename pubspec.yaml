@@ -77,6 +77,7 @@ flutter:
     - lib/assets/images/flags/italy.png
     - lib/assets/images/flags/france.png
     - lib/assets/images/flags/egypt.png
+    - lib/assets/images/flags/spain.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

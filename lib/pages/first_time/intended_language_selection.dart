@@ -13,7 +13,6 @@ class IntendedLanguageSelection extends StatefulWidget {
 }
 
 class _IntendedLanguageSelectionState extends State<IntendedLanguageSelection> {
-  String? _intendedSelectedLanguage;
 
   void _proceedToApp(Map<String, dynamic> languageData) {
     final language = languageData['language'];
@@ -23,7 +22,6 @@ class _IntendedLanguageSelectionState extends State<IntendedLanguageSelection> {
     languageProvider.setIntendedSelectedLanguage(language); // Use setIntendedSelectedLanguage here
 
     setState(() {
-      _intendedSelectedLanguage = language;
     });
 
     Navigator.push(

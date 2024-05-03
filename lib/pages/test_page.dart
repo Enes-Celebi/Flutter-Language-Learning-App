@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:lingoneer_beta_0_0_1/components/test_component.dart';
+import 'package:lingoneer_beta_0_0_1/pages/test_completion_page.dart';
 
 class TestPage extends StatefulWidget {
   final String selectedCardIndex;
 
   const TestPage({
-    Key? key,
+    super.key,
     required this.selectedCardIndex,
-  }) : super(key: key);
+  });
 
   @override
   _TestPageState createState() => _TestPageState();
@@ -22,7 +22,10 @@ class _TestPageState extends State<TestPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: FutureBuilder<QuerySnapshot>(
-        future: FirebaseFirestore.instance.collection('tests').get(),
+        future: FirebaseFirestore.instance
+        .collection('tests')
+            .where('mapcard', isEqualTo: widget.selectedCardIndex)
+            .get(),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
             return Text('Error ${snapshot.error}');
@@ -54,9 +57,9 @@ class _TestPageState extends State<TestPage> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      if (_testData.isNotEmpty && _testData[_currentIndex]['imageUrl'] != null)
+                      if (_testData.isNotEmpty && _testData[_currentIndex]['image'] != null)
                         Image.network(
-                          _testData[_currentIndex]['imageUrl'],
+                          _testData[_currentIndex]['image'],
                           width: 200,
                           height: 200,
                           errorBuilder: (context, error, stackTrace) {
@@ -68,7 +71,7 @@ class _TestPageState extends State<TestPage> {
                             );
                           },
                         ),
-                      if (_testData.isNotEmpty && _testData[_currentIndex]['imageUrl'] != null) const SizedBox(height: 16), // Additional space between image and question
+                      if (_testData.isNotEmpty && _testData[_currentIndex]['image'] != null) const SizedBox(height: 16), // Additional space between image and question
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 16), // Horizontal padding for the question
                         child: Text(
@@ -154,6 +157,7 @@ class _TestPageState extends State<TestPage> {
                       });
                     } else {
                       // Handle test completion
+                      _showTestCompletionPage();
                     }
                   }
                 },
@@ -168,4 +172,14 @@ class _TestPageState extends State<TestPage> {
       },
     );
   }
+
+  void _showTestCompletionPage() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => TestCompletionPage(),
+      ),
+    );
+  }
+
 }
