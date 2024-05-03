@@ -114,7 +114,7 @@ void _checkUsername(User? user) async {
 
           QuerySnapshot userData = snapshot.data!;
           if (userData.docs.isEmpty) {
-            return const Text('User document not found');
+            return const Text('User document not found!');
           }
 
           final DocumentSnapshot userDoc = userData.docs.first;
@@ -167,3 +167,5 @@ void _checkUsername(User? user) async {
     );
   }
 }
+
+// comment 
