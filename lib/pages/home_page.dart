@@ -117,19 +117,19 @@ void _checkUsername(User? user) async {
             return const Text('User document not found!');
           }
 
-          // final DocumentSnapshot userDoc = userData.docs.first;
-          // final userDataMap = userDoc.data() as Map<String, dynamic>;
-          // if (!userDataMap.containsKey('language')) {
-          //   return const Text('Language not found');
-          // }
+          final DocumentSnapshot userDoc = userData.docs.first;
+          final userDataMap = userDoc.data() as Map<String, dynamic>;
+          if (!userDataMap.containsKey('language')) {
+            return const Text('Language not found');
+          }
 
-          //final String language = userDataMap['language'];
+          final String language = userDataMap['language'];
 
           
         return FutureBuilder<QuerySnapshot>(       
         future: FirebaseFirestore.instance
         .collection('subjects')
-        .where('language', isEqualTo: languageProvider.languageComb)
+        .where('language', isEqualTo: language)
         .get(),
         builder: (context, snapshot) {
           if (snapshot.hasError) {

@@ -174,12 +174,13 @@ class _TestPageState extends State<TestPage> {
   }
 
   void _showTestCompletionPage() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => TestCompletionPage(),
-      ),
-    );
-  }
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (context) => TestCompletionPage(selectedCardIndex: widget.selectedCardIndex,isLesson: false,),
+    ),
+  );
+}
+
 
 }

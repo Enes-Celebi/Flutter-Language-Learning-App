@@ -1,0 +1,227 @@
+[33mcommit 735a7fe39491319f4b016e859db2c694ee37e256[m[33m ([m[1;36mHEAD -> [m[1;32mmaster[m[33m, [m[1;31morigin/master1[m[33m)[m
+Author: Enes-Celebi <121902027+Enes-Celebi@users.noreply.github.com>
+Date:   Fri May 3 16:21:15 2024 +0300
+
+    added command
+
+[33mcommit 50678330414bcf1076acc19fa5cdca32415fcc10[m
+Merge: a03146c ab7e554
+Author: Enes-Celebi <121902027+Enes-Celebi@users.noreply.github.com>
+Date:   Fri May 3 16:08:43 2024 +0300
+
+    recombination of both jobs
+
+[33mcommit a03146c9f5e74a9c05c21a3226ab212eb32013fe[m
+Author: Enes-Celebi <121902027+Enes-Celebi@users.noreply.github.com>
+Date:   Fri May 3 15:45:10 2024 +0300
+
+    test page ending works
+
+[33mcommit ab7e55410ec6bd1d337754172aae98f99cbf89e1[m[33m ([m[1;31morigin/master[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Author: anas <anasfateen77@gmail.com>
+Date:   Fri May 3 15:44:48 2024 +0300
+
+    languages in accout settings show accurate data
+
+[33mcommit bd533a58eedaf5a394b38c53017b6fd1a9e49d59[m
+Author: Enes-Celebi <121902027+Enes-Celebi@users.noreply.github.com>
+Date:   Thu May 2 01:11:39 2024 +0300
+
+    test and lesson frontend semi ready
+
+[33mcommit 364e359b47ee33d788bbe21d4d1c5ca50b67580f[m
+Author: Enes-Celebi <121902027+Enes-Celebi@users.noreply.github.com>
+Date:   Wed May 1 06:54:25 2024 +0300
+
+    lesson fetching n displaying works too
+
+[33mcommit 71b716113a975cff2a398247807830351a598353[m
+Author: Enes-Celebi <121902027+Enes-Celebi@users.noreply.github.com>
+Date:   Wed May 1 02:26:26 2024 +0300
+
+    almost done lesson n test mechanism, they're barely working
+
+[33mcommit f31ec3a057a59e0a28fd92ca118fe2f47269e7c5[m
+Author: anas <anasfateen77@gmail.com>
+Date:   Tue Apr 30 22:40:33 2024 +0300
+
+    account setting added
+
+[33mcommit ccab18eeaf01d0c0500e5bdaf0bf21bd8c4f654d[m
+Author: anas <anasfateen77@gmail.com>
+Date:   Tue Apr 30 21:39:53 2024 +0300
+
+    username added & register page error resolved
+
+[33mcommit b7cd7cd6cb4ba3233f95e5c9999b04dc40c227b6[m
+Author: Enes-Celebi <121902027+Enes-Celebi@users.noreply.github.com>
+Date:   Tue Apr 30 20:18:32 2024 +0300
+
+    did the lessons' backend logic
+
+[33mcommit fb6706835c15d9a0d6d7b947180b602fd4dbe792[m
+Author: Enes-Celebi <121902027+Enes-Celebi@users.noreply.github.com>
+Date:   Tue Apr 30 19:10:33 2024 +0300
+
+    added lesson functionality.. (almost) but it only returns language not found in home page cuz someone else was working on user progress
+
+[33mcommit 0263d5ad9213b243fe9e524775caa7e91978ca79[m
+Merge: f4e77b6 431cd1d
+Author: anas <anasfateen77@gmail.com>
+Date:   Tue Apr 30 02:10:52 2024 +0300
+
+    Merge branch 'master' of https://github.com/Enes-Celebi/lingoengineer_beta_0_0_1
+
+[33mcommit f4e77b61ce8317adac09d23ebcb831928163a855[m
+Author: anas <anasfateen77@gmail.com>
+Date:   Tue Apr 30 02:05:04 2024 +0300
+
+    get language from firebase in homepage & some minor changes
+
+[33mcommit 431cd1dfe5cfc3f8f51a8ff7e3a2f787b9060ffc[m
+Author: Enes-Celebi <121902027+Enes-Celebi@users.noreply.github.com>
+Date:   Tue Apr 30 01:41:55 2024 +0300
+
+    now mapcards and levels are being filtered according to the selected subjects
+
+[33mcommit cab59de2bf86c5ace589f69a3851df096a061755[m
+Author: Enes-Celebi <121902027+Enes-Celebi@users.noreply.github.com>
+Date:   Mon Apr 29 19:13:15 2024 +0300
+
+    real language selection and a lot more
+
+[33mcommit 020b408cd9aa88c4b24fee9c1d7d2b8647758cd4[m
+Author: Enes-Celebi <121902027+Enes-Celebi@users.noreply.github.com>
+Date:   Sat Apr 27 20:42:57 2024 +0300
+
+    reading all types of cards from firebase and displaying them. ps added demo splash screen
+
+[33mcommit f980effcfaa823f222a0daf7c9305b41481e229d[m
+Author: Enes-Celebi <121902027+Enes-Celebi@users.noreply.github.com>
+Date:   Sat Apr 27 03:30:29 2024 +0300
+
+    problem still exists but at least removed an unnecessary file regarding it
+
+[33mcommit dda690374423972efb11eecffe917c18982a1515[m
+Author: anas <anasfateen77@gmail.com>
+Date:   Fri Apr 26 16:58:02 2024 +0300
+
+    dark mode & appbar component & changes in login page navigation
+
+[33mcommit 27387e974d57b5bf80ac296a8c5e0cf228a8e84f[m
+Author: Enes-Celebi <121902027+Enes-Celebi@users.noreply.github.com>
+Date:   Fri Apr 26 15:00:06 2024 +0300
+
+    sending data from json files to firebase and structuring the database"
+
+[33mcommit 83498f3547b7aeb631295db47a8956740900372f[m
+Author: anas <anasfateen77@gmail.com>
+Date:   Tue Apr 23 00:16:16 2024 +0300
+
+    improve in setting page
+
+[33mcommit d580f580e03b0cc7dfac7706448516d3f78367f8[m
+Merge: 547b44f 5b79375
+Author: anas <anasfateen77@gmail.com>
+Date:   Mon Apr 22 23:09:15 2024 +0300
+
+    Merge branch 'master' of https://github.com/Enes-Celebi/lingoengineer_beta_0_0_1
+
+[33mcommit 547b44f95ee606be08d396696720fe3da13a2422[m
+Author: anas <anasfateen77@gmail.com>
+Date:   Mon Apr 22 23:03:34 2024 +0300
+
+    setting page created
+
+[33mcommit 5b793750b522983f70d744ace3f7ea2df70e7025[m
+Merge: 10a216d 7414422
+Author: Enes-Celebi <121902027+Enes-Celebi@users.noreply.github.com>
+Date:   Mon Apr 22 22:15:10 2024 +0300
+
+    fixed merge issue + ui advancements + start of lesson & test page
+
+[33mcommit 10a216dcbb740ec69a47e73b013f4b9d8c75b941[m
+Author: Enes-Celebi <121902027+Enes-Celebi@users.noreply.github.com>
+Date:   Mon Apr 22 19:58:48 2024 +0300
+
+    more ui improvement + the start of both lesson & test pages
+
+[33mcommit 741442257bcbf6c9cdd3f8d940093de74ebdecb5[m
+Author: anas <anasfateen77@gmail.com>
+Date:   Sun Apr 21 00:14:59 2024 +0300
+
+    get category photo from firebase
+
+[33mcommit ac9fb339e3dd91ebc83e2721f3609bbaca959627[m
+Author: anas <anasfateen77@gmail.com>
+Date:   Sat Apr 20 22:12:07 2024 +0300
+
+    getting the lesson categories from firebase
+
+[33mcommit e4b2952ecb9311d46de39fa1b7ae80128ab9451e[m
+Author: anas <anasfateen77@gmail.com>
+Date:   Sat Apr 20 14:52:44 2024 +0300
+
+    sign in error modify
+
+[33mcommit d577526dddca65c8fa918eda4fed2ef8eb81f359[m
+Author: Enes-Celebi <121902027+Enes-Celebi@users.noreply.github.com>
+Date:   Sat Apr 20 00:21:11 2024 +0300
+
+    minor frontend improvement, json file still not done
+
+[33mcommit 988e4b309fa77caf72978038bf18902dc0a6d24b[m
+Author: Enes-Celebi <121902027+Enes-Celebi@users.noreply.github.com>
+Date:   Tue Apr 16 19:30:15 2024 +0300
+
+    more ui display
+
+[33mcommit 613f45b8046a2f9eac5d460799314b9a0616a3d6[m
+Merge: c416d85 c9b4d1f
+Author: anas <anasfateen77@gmail.com>
+Date:   Tue Apr 16 11:07:27 2024 +0300
+
+    Merge branch 'master' of https://github.com/Enes-Celebi/lingoengineer_beta_0_0_1
+
+[33mcommit c416d8511e37fa875ba1cddc04628eacc452b7bd[m
+Author: anas <anasfateen77@gmail.com>
+Date:   Tue Apr 16 11:06:32 2024 +0300
+
+    login and signup without error messages
+
+[33mcommit c9b4d1fba6344085a3b821d5456267d5fb494614[m
+Author: Enes-Celebi <121902027+Enes-Celebi@users.noreply.github.com>
+Date:   Tue Apr 16 03:04:32 2024 +0300
+
+    barely changed some stuff on home page and start working on subject_level_page
+
+[33mcommit c1b519ba7471049bc8d841f7341702d0dab12712[m
+Merge: 44c4446 fdc90ad
+Author: anas <anasfateen77@gmail.com>
+Date:   Mon Apr 15 13:29:18 2024 +0300
+
+    resolve merge errors
+
+[33mcommit fdc90ad4fb9f3084d8573eb0cd4c5e6144c4e228[m
+Author: enes celebi <enescelebi0027@gmail.com>
+Date:   Mon Apr 15 13:10:25 2024 +0300
+
+    more details in home page
+
+[33mcommit 44c4446ee1bd0786a44082f10b5fe28671472b05[m
+Author: anas <anasfateen77@gmail.com>
+Date:   Mon Apr 15 04:12:08 2024 +0300
+
+    firebase integraion setup complete
+
+[33mcommit 8702bc1e98147b59896d4e364b99adfae5b07fc1[m
+Author: anas <anasfateen77@gmail.com>
+Date:   Sun Apr 14 18:58:19 2024 +0300
+
+    firebase integration
+
+[33mcommit ff19669fb5e6465a523ae902104dcad7943fc716[m
+Author: enes celebi <enescelebi0027@gmail.com>
+Date:   Fri Apr 12 01:34:45 2024 +0300
+
+    demo sign in, sign up, and part of home page ui

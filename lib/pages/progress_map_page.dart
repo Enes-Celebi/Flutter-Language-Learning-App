@@ -1,4 +1,5 @@
 import "package:cloud_firestore/cloud_firestore.dart";
+import "package:firebase_auth/firebase_auth.dart";
 import "package:flutter/material.dart";
 import "package:lingoneer_beta_0_0_1/components/appbar.dart";
 import "package:lingoneer_beta_0_0_1/components/progress_map_card.dart";
@@ -7,6 +8,7 @@ import "package:lingoneer_beta_0_0_1/pages/test_page.dart";
 
 class progressMapPage extends StatefulWidget {
   final String selectedCardIndex;
+
 
   const progressMapPage({
     super.key,
@@ -21,6 +23,7 @@ class progressMapPage extends StatefulWidget {
 
 class _progressMapPageState extends State<progressMapPage> {
   void _goToLessonPage(String mapcardId) {
+
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -39,64 +42,84 @@ class _progressMapPageState extends State<progressMapPage> {
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: const CustomAppBar(),
-      body: FutureBuilder<QuerySnapshot>(
-        future: FirebaseFirestore.instance
+@override
+Widget build(BuildContext context) {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  User? user = _auth.currentUser;
+  return Scaffold(
+    appBar: const CustomAppBar(),
+    body: FutureBuilder<List<QuerySnapshot>>(
+      future: Future.wait([
+        FirebaseFirestore.instance
             .collection('mapcards')
             .where('level', isEqualTo: widget.selectedCardIndex)
             .get(),
-        builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            return Text('Error ${snapshot.error}');
-          }
+        FirebaseFirestore.instance
+            .collection('progress')
+            .where('userId', isEqualTo: user?.uid)
+            .get(),
+      ]),
+      builder: (context, AsyncSnapshot<List<QuerySnapshot>> snapshot) {
+        if (snapshot.hasError) {
+          return Text('Error ${snapshot.error}');
+        }
 
-          if (!snapshot.hasData) {
-            return const Center(child: CircularProgressIndicator());
-          }
+        if (!snapshot.hasData) {
+          return const Center(child: CircularProgressIndicator());
+        }
 
-          final mapCards = snapshot.data!.docs;
+        final mapCardsSnapshot = snapshot.data![0];
+        final progressSnapshot = snapshot.data![1];
 
-          return SingleChildScrollView(
-            child: Column(
-              children: mapCards.map((mapCard) {
-                final title = mapCard.get('name');
-                final imageURL = mapCard.get('image');
-                final type = mapCard.get('type');
-                final mapCardId = mapCard.get('id');
+        if (mapCardsSnapshot.docs.isEmpty) {
+          return const Center(child: Text('No mapcards found.'));
+        }
 
-                return ProgressMapCard(
-                  title: title ?? 'No Title',
-                  lessonImagePath: imageURL ?? 'lib/assets/images/test/pic1.png',
-                  statusImagePath: 'lib/assets/images/icons/locked.png',
-                  cardColor: Colors.blue[300]!,
-                  borderColor: Colors.blue[200]!,
-                  onTap: () {
-                    if (type == 'lesson') {
-                      _goToLessonPage(mapCardId);
-                    } else if (type == 'test') {
-                      _goToTestPage(mapCardId);
-                    } else {
-                      // Handle other types if needed
-                    }
-                  },
-                  alignRight: type == 'lesson', // Align right if type is lesson
-                );
-              }).toList(),
-            ),
-          );
-        },
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // Navigate back to home screen
-          Navigator.pop(context);
-        },
-        child: const Icon(Icons.arrow_back),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
-    );
-  }
+        final mapCards = mapCardsSnapshot.docs;
+        final donelessonIds = progressSnapshot.docs.map((doc) => doc['lessonId']).toList();
+
+
+        return SingleChildScrollView(
+          child: Column(
+            children: mapCards.map((mapCard) {
+              final title = mapCard.get('name');
+              final imageURL = mapCard.get('image');
+              final type = mapCard.get('type');
+              final mapCardId = mapCard.get('id');
+
+              final bool isSelectedCardIndexInLessonIds = donelessonIds.contains(mapCardId);
+
+              return ProgressMapCard(
+                title: title ?? 'No Title',
+                lessonImagePath: imageURL ?? 'lib/assets/images/test/pic1.png',
+                statusImagePath: 'lib/assets/images/icons/locked.png',
+                cardColor: isSelectedCardIndexInLessonIds ? Colors.green[300]! : Colors.blue[300]!,
+                borderColor: Colors.blue[200]!,
+                onTap: () {
+                  if (type == 'lesson') {
+                    _goToLessonPage(mapCardId);
+                  } else if (type == 'test') {
+                    _goToTestPage(mapCardId);
+                  } else {
+                    // Handle other types if needed
+                  }
+                },
+                alignRight: type == 'lesson', // Align right if type is lesson
+              );
+            }).toList(),
+          ),
+        );
+      },
+    ),
+    floatingActionButton: FloatingActionButton(
+      onPressed: () {
+        // Navigate back to home screen
+        Navigator.pop(context);
+      },
+      child: const Icon(Icons.arrow_back),
+    ),
+    floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
+  );
+}
+
 }

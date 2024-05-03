@@ -1,14 +1,12 @@
 import "package:cloud_firestore/cloud_firestore.dart";
 import "package:flutter/material.dart";
 import "package:lingoneer_beta_0_0_1/components/lesson_component.dart";
+import "package:lingoneer_beta_0_0_1/pages/test_completion_page.dart";
 
 class LessonPage extends StatefulWidget {
   final String selectedCardIndex;
 
-  const LessonPage({
-    super.key, 
-    required this.selectedCardIndex
-  });
+  const LessonPage({super.key, required this.selectedCardIndex});
 
   @override
   State<LessonPage> createState() => _LessonPageState();
@@ -35,17 +33,17 @@ class _LessonPageState extends State<LessonPage> {
             return const Center(child: CircularProgressIndicator());
           }
 
-          
-
-          _lessonData = snapshot.data!.docs.map((doc) => doc.data() as Map<String, dynamic>).toList();
+          _lessonData = snapshot.data!.docs
+              .map((doc) => doc.data() as Map<String, dynamic>)
+              .toList();
 
           return Column(
             children: [
               Expanded(
                 child: LessonComponent(
                   explanation: _lessonData[_currentIndex]['explanation'] ?? '',
-                  imageUrl: _lessonData[_currentIndex]['image'] ?? null,
-                  audioUrl: _lessonData[_currentIndex]['audio'] ?? null,
+                  imageUrl: _lessonData[_currentIndex]['image'],
+                  audioUrl: _lessonData[_currentIndex]['audio'],
                   progress: (_currentIndex + 1) / _lessonData.length,
                 ),
               ),
@@ -60,7 +58,7 @@ class _LessonPageState extends State<LessonPage> {
                         });
                       }
                     },
-                    child: Text('Back'),
+                    child: const Text('Back'),
                   ),
                   ElevatedButton(
                     onPressed: () {
@@ -68,9 +66,11 @@ class _LessonPageState extends State<LessonPage> {
                         setState(() {
                           _currentIndex++;
                         });
+                      } else {
+                        _showTestCompletionPage();
                       }
                     },
-                    child: Text('Next'),
+                    child: const Text('Next'),
                   ),
                 ],
               ),
@@ -86,6 +86,16 @@ class _LessonPageState extends State<LessonPage> {
         child: const Icon(Icons.arrow_back),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
+    );
+  }
+
+  void _showTestCompletionPage() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) =>
+            TestCompletionPage(selectedCardIndex: widget.selectedCardIndex,isLesson: true,),
+      ),
     );
   }
 }
