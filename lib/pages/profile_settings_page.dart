@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:lingoneer_beta_0_0_1/pages/account_settings.dart';
 import 'package:lingoneer_beta_0_0_1/pages/login_page.dart';
 import 'package:lingoneer_beta_0_0_1/themes/theme_provider.dart';
 import 'package:provider/provider.dart';
@@ -85,7 +86,7 @@ class SettingsPage extends StatelessWidget {
       body: ListView(
         children: [
           ListTile(
-            title: const Text('General'),
+            title: const Text('Account'),
             trailing: const Icon(Icons.chevron_right),
             onTap: () {
               // Navigate to a separate general settings page (optional)
@@ -152,15 +153,3 @@ class SettingsPage extends StatelessWidget {
   }
 }
 
-// Assuming you have a separate GeneralSettingsPage widget
-class GeneralSettingsPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('General Settings'),
-      ),
-      // Add your general settings UI here
-    );
-  }
-}

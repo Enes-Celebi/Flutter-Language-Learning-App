@@ -6,8 +6,8 @@ class TestPage extends StatefulWidget {
   final String selectedCardIndex;
 
   const TestPage({
-    super.key,
-    required this.selectedCardIndex,
+    super.key, 
+    required this.selectedCardIndex
   });
 
   @override

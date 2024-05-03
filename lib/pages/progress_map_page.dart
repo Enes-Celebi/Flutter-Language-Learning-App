@@ -12,6 +12,8 @@ class progressMapPage extends StatefulWidget {
     super.key,
     required this.selectedCardIndex,
   });
+  // tr2en whole
+  // ar2tr fizik
 
   @override
   State<progressMapPage> createState() => _progressMapPageState();
@@ -32,6 +34,7 @@ class _progressMapPageState extends State<progressMapPage> {
       context,
       MaterialPageRoute(
         builder: (context) => TestPage(selectedCardIndex: mapcardId),
+        
       ),
     );
   }
