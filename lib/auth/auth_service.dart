@@ -6,10 +6,9 @@ class AuthService {
   final _auth = FirebaseAuth.instance;
 
   Future<User?> createUserWithEmailAndPassword(
-      String email, String password) async {
+    String email, String password) async {
     try {
-      final cred = await _auth.createUserWithEmailAndPassword(
-          email: email, password: password);
+      final cred = await _auth.createUserWithEmailAndPassword(email: email, password: password);
       return cred.user;
     } catch (e) {
       log("Something went wrong");
@@ -20,8 +19,7 @@ class AuthService {
   Future<User?> loginUserWithEmailAndPassword(
       String email, String password) async {
     try {
-      final cred = await _auth.signInWithEmailAndPassword(
-          email: email, password: password);
+      final cred = await _auth.signInWithEmailAndPassword(email: email, password: password);
       return cred.user;
     } catch (e) {
       log("Something went wrong");
@@ -36,5 +34,4 @@ class AuthService {
       log("Something went wrong");
     }
   }
-
 }

@@ -79,95 +79,111 @@ class _RegisterPageState extends State<RegisterPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            // logo
-            Icon(
-              Icons.lock_open_rounded,
-              size: 100,
-              color: Theme.of(context).colorScheme.inversePrimary,
-            ),
-
-            const SizedBox(height: 25),
-
-            // message, app slogan
-            Text(
-              "Lingoengineer",
-              style: TextStyle(
-                fontSize: 16,
-                color: Theme.of(context).colorScheme.inversePrimary,
-              ),
-            ),
-
-            const SizedBox(height: 25),
-
-            // email textfield
-            MyTextField(
-                controller: emailController,
-                hintText: "Email",
-                obscureText: false),
-
-            const SizedBox(height: 25),
-
-            // password textfield
-            MyTextField(
-                controller: passwordController,
-                hintText: "Password",
-                obscureText: true),
-
-            const SizedBox(height: 25),
-
-            // password textfield
-            MyTextField(
-                controller: confirmPasswordController,
-                hintText: "Confirm password",
-                obscureText: true),
-
-            const SizedBox(height: 25),
-
-            // sign up button
-            MyButton(
-              text: "Sign up",
-              onTap: () => signup(context),
-            ),
-
-            const SizedBox(height: 25),
-
-            // already have an account? login here
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  "Already have an account?",
+      body: SingleChildScrollView(
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+          
+              // message, app slogan
+              Padding(
+                padding: const EdgeInsets.only(top: 160),
+                child: Text(
+                  "Register",
                   style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
                     color: Theme.of(context).colorScheme.inversePrimary,
                   ),
                 ),
-                const SizedBox(width: 4),
-                GestureDetector(
-                  onTap: () {
-                    // Navigate to the registration screen
-                    Navigator.push(
-                      context, // Current build context
-                      MaterialPageRoute(
-                          builder: (context) => const LoginPage(
-                                onTap: null,
-                              )), // Route definition
-                    );
-                  },
-                  child: Text(
-                    "login now",
+              ),
+          
+              const SizedBox(height: 15),
+          
+              // email textfield
+              MyTextField(
+                  controller: emailController,
+                  hintText: "Email",
+                  obscureText: false),
+          
+              const SizedBox(height: 15),
+          
+              // password textfield
+              MyTextField(
+                  controller: passwordController,
+                  hintText: "Password",
+                  obscureText: true),
+          
+              const SizedBox(height: 15),
+          
+              // password textfield
+              MyTextField(
+                  controller: confirmPasswordController,
+                  hintText: "Confirm password",
+                  obscureText: true),
+          
+              const SizedBox(height: 15),
+          
+              // sign up button
+              MyButton(
+                text: "Sign up",
+                onTap: () => signup(context),
+              ),
+              
+              const SizedBox(height: 15),
+          
+              // already have an account? login here
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "Already have an account?",
                     style: TextStyle(
                       color: Theme.of(context).colorScheme.inversePrimary,
-                      fontWeight: FontWeight.bold,
                     ),
                   ),
-                )
-              ],
-            )
-          ],
+                  const SizedBox(width: 4),
+                  GestureDetector(
+                    onTap: () {
+                      // Navigate to the registration screen
+                      Navigator.push(
+                        context, // Current build context
+                        MaterialPageRoute(
+                            builder: (context) => const LoginPage(
+                                  onTap: null,
+                                )), // Route definition
+                      );
+                    },
+                    child: Text(
+                      "login now",
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.inversePrimary,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  )
+                ],
+              ),
+
+              const SizedBox(height: 25),
+          
+              // Add a divider
+              Divider(
+                color: Theme.of(context).colorScheme.inversePrimary,
+                thickness: 1, // Adjust thickness as needed
+                indent: 16, // Adjust indentation as needed
+                endIndent: 16, // Adjust end indentation as needed
+              ),
+          
+              const SizedBox(height: 25),
+          
+              // sign up button
+              const MyButton(
+                text: "Google sign up",
+                onTap: null,
+              ),
+            ],
+          ),
         ),
       ),
     );
