@@ -4,11 +4,13 @@ import "package:lingoneer_beta_0_0_1/components/my_button.dart";
 import "package:lingoneer_beta_0_0_1/components/my_textfield.dart";
 import "package:lingoneer_beta_0_0_1/pages/home_page.dart";
 import "package:lingoneer_beta_0_0_1/pages/register_page.dart";
+import "package:lingoneer_beta_0_0_1/services/language_provider.dart";
+import "package:provider/provider.dart";
 
 class LoginPage extends StatefulWidget {
   final void Function()? onTap;
 
-  const LoginPage({super.key, required this.onTap});
+  const LoginPage({Key? key, required this.onTap}) : super(key: key);
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -16,37 +18,36 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   final _auth = FirebaseAuth.instance;
-  // text editing controllers
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
-  // login method
   void login() async {
-   try {
+    final languageProvider = Provider.of<LanguageProvider>(context, listen: false);
+    final String? languageComb = languageProvider.languageComb;
+
+    try {
       final cred = await _auth.signInWithEmailAndPassword(
         email: emailController.text.trim(),
         password: passwordController.text,
       );
 
       if (cred.user != null) {
-        
-        // Navigate to the home page
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => const HomePage()),
+          MaterialPageRoute(builder: (context) => HomePage(selectedLanguageComb: languageComb)),
         );
       }
-    }  on FirebaseAuthException catch (e) {
-    String message = e.code;
+    } on FirebaseAuthException catch (e) {
+      String message = e.code;
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: Theme.of(context).errorColor,
-      ),
-    );
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(message),
+          backgroundColor: Theme.of(context).errorColor,
+        ),
+      );
+    }
   }
-}
 
   @override
   Widget build(BuildContext context) {
@@ -57,8 +58,6 @@ class _LoginPageState extends State<LoginPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-          
-              // message, app slogan
               Padding(
                 padding: const EdgeInsets.only(top: 160),
                 child: Text(
@@ -70,36 +69,24 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
               ),
-          
               const SizedBox(height: 25),
-          
-              // email textfield
               MyTextField(
                 controller: emailController, 
                 hintText: "Email", 
                 obscureText: false
               ),
-          
               const SizedBox(height: 25),
-          
-              // password textfield
               MyTextField(
                 controller: passwordController, 
                 hintText: "Password", 
                 obscureText: true
               ),
-          
               const SizedBox(height: 25),
-          
-              // sign in button
               MyButton(
                 text: "Sign in", 
                 onTap: login,
               ),
-          
               const SizedBox(height: 25),
-          
-              // not a member? register now
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -112,10 +99,9 @@ class _LoginPageState extends State<LoginPage> {
                   const SizedBox(width: 4),
                   GestureDetector(
                     onTap: () {
-                      // Navigate to the registration screen
                       Navigator.push(
-                        context, // Current build context
-                        MaterialPageRoute(builder: (context) => RegisterPage(onTap: () {  },)), // Route definition
+                        context,
+                        MaterialPageRoute(builder: (context) => RegisterPage(onTap: () {  },)),
                       );
                     },
                     child: Text(
@@ -128,20 +114,14 @@ class _LoginPageState extends State<LoginPage> {
                   )
                 ],
               ),
-
               const SizedBox(height: 25),
-
-              // Add a divider
               Divider(
                 color: Theme.of(context).colorScheme.inversePrimary,
                 thickness: 1,
                 indent: 16,
                 endIndent: 16,
               ),
-
               const SizedBox(height: 25),
-
-              // sign up button
               const MyButton(
                 text: "Google sign up", 
                 onTap: null

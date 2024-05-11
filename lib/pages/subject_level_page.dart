@@ -18,11 +18,16 @@ class subjectLevelPage extends StatefulWidget {
 }
 
 class _subjectLevelPageState extends State<subjectLevelPage> {
-  void _goToProgressMapPage(String levelId) {
+
+  void _goToProgressMapPage(String levelId, String subjectId) {
     Navigator.push(
       context,
       MaterialPageRoute(
-          builder: (context) => progressMapPage(selectedCardIndex: levelId)),
+        builder: (context) => progressMapPage(
+          selectedCardIndex: levelId, 
+          selectedSubjectIndex: subjectId,
+        )
+      ),
     );
   }
 
@@ -53,21 +58,24 @@ class _subjectLevelPageState extends State<subjectLevelPage> {
             return const Center(child: CircularProgressIndicator());
           }
 
-          final Levels = snapshot.data![0].docs;
+          final levelsSnapshot = snapshot.data![0].docs;
           final progressSnapshot = snapshot.data![1];
 
-          final donelevelsIds = progressSnapshot.docs
-    .map((doc) => doc['lessonId'].toString().substring(0, doc['lessonId'].toString().length - 3))
-    .toList();
+          final doneMapcardsIds = progressSnapshot.docs
+            .map((doc) => doc['lessonId'].toString()
+            .substring(0, doc['lessonId'].toString().length - 3))
+            .toList();
 
           return SingleChildScrollView(
             child: Column(
-              children: Levels.map((Levels) {
-                final title = Levels.get('name');
-                final imageURL = Levels.get('image');
-                final levelId = Levels.get('id');
+              children: levelsSnapshot.map((levelsSnapshot) {
+                final title = levelsSnapshot.get('name');
+                final imageURL = levelsSnapshot.get('image');
+                final levelId = levelsSnapshot.get('id');
+                final subjectId = levelsSnapshot.get('subject');
 
-                final countOfSpecificLevel = donelevelsIds.where((level) => level == levelId).length;
+                final countOfSpecificLevel = doneMapcardsIds
+                  .where((level) => level == levelId).length;
 
                 return SubjectLevelCard(
                   title: title ??
@@ -77,7 +85,9 @@ class _subjectLevelPageState extends State<subjectLevelPage> {
                   cardColor: Colors.blue,
                   progressColor: Colors.blue.shade700,
                   onTap: () => _goToProgressMapPage(
-                      levelId), // Use document ID for navigation (optional)
+                      levelId,
+                      subjectId
+                    ), // Use document ID for navigation (optional)
                 );
               }).toList(),
             ),

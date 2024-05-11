@@ -8,14 +8,14 @@ import "package:lingoneer_beta_0_0_1/pages/test_page.dart";
 
 class progressMapPage extends StatefulWidget {
   final String selectedCardIndex;
+  final String selectedSubjectIndex;
 
 
   const progressMapPage({
     super.key,
     required this.selectedCardIndex,
+    required this.selectedSubjectIndex,
   });
-  // tr2en whole
-  // ar2tr fizik
 
   @override
   State<progressMapPage> createState() => _progressMapPageState();
@@ -58,6 +58,11 @@ Widget build(BuildContext context) {
             .collection('progress')
             .where('userId', isEqualTo: user?.uid)
             .get(),
+        
+        FirebaseFirestore.instance
+            .collection('mapcards')
+            .where('subject', isEqualTo: widget.selectedSubjectIndex)
+            .get(),
       ]),
       builder: (context, AsyncSnapshot<List<QuerySnapshot>> snapshot) {
         if (snapshot.hasError) {
@@ -70,13 +75,16 @@ Widget build(BuildContext context) {
 
         final mapCardsSnapshot = snapshot.data![0];
         final progressSnapshot = snapshot.data![1];
+        final mapCardSubjectSnapshot = snapshot.data![2];
 
-        if (mapCardsSnapshot.docs.isEmpty) {
+        if (mapCardsSnapshot.docs.isEmpty || mapCardSubjectSnapshot.docs.isEmpty) {
           return const Center(child: Text('No mapcards found.'));
         }
 
         final mapCards = mapCardsSnapshot.docs;
+        final mapCardsSubject = mapCardSubjectSnapshot.docs;
         final donelessonIds = progressSnapshot.docs.map((doc) => doc['lessonId']).toList();
+        final donelessonIdsSubject = progressSnapshot.docs.map((doc) => doc['lessonId']).toList();
 
 
         return SingleChildScrollView(
@@ -88,6 +96,7 @@ Widget build(BuildContext context) {
               final mapCardId = mapCard.get('id');
 
               final bool isSelectedCardIndexInLessonIds = donelessonIds.contains(mapCardId);
+              final bool isSelectedCardIndexInLessonIdsSubject = donelessonIdsSubject.contains(mapCardsSubject);
 
               return ProgressMapCard(
                 title: title ?? 'No Title',

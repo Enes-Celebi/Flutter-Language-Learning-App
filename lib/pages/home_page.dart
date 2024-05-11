@@ -9,7 +9,12 @@ import 'package:provider/provider.dart';
 
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  final String? selectedLanguageComb;
+
+  const HomePage({
+    super.key,
+    required this.selectedLanguageComb
+  });
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -21,10 +26,88 @@ class _HomePageState extends State<HomePage> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => subjectLevelPage(selectedCardIndex: subjectId),
+        builder: (context) => subjectLevelPage(
+          selectedCardIndex: subjectId
+        ),
       ),
     );
   }
+
+  @override
+  Widget build(BuildContext context) {
+    Provider.of<LanguageProvider>(context);
+    final FirebaseAuth _auth = FirebaseAuth.instance;
+    User? user = _auth.currentUser;
+
+    _checkUsername(user!);
+  
+    return Scaffold(
+      appBar: const CustomAppBar(),
+      body: FutureBuilder<List<QuerySnapshot>>(
+        future: Future.wait([
+          FirebaseFirestore.instance
+            .collection('subjects')
+            .where('language', isEqualTo: widget.selectedLanguageComb)
+            .get(),
+          FirebaseFirestore.instance
+            .collection('Users')
+            .where('email', isEqualTo: user.email) 
+            .get(),
+          FirebaseFirestore.instance
+            .collection('progress')
+            .where('userId', isEqualTo: user?.uid)
+            .get(),
+        ]),
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return Text('Error: ${snapshot.error}');
+          }
+
+          if (!snapshot.hasData) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          final subjectsSnapshot = snapshot.data![0].docs;
+          QuerySnapshot userData = snapshot.data![1]!;
+          final progressSnapshot = snapshot.data![2];
+
+          final DocumentSnapshot userDoc = userData.docs.first;
+          final userDataMap = userDoc.data() as Map<String, dynamic>;
+          if (!userDataMap.containsKey('language')) {
+            return const Text('Language not found');
+          }
+
+          final doneMapcardsIds = progressSnapshot.docs
+            .map((doc) => doc['lessonId'].toString()
+            .substring(0, doc['lessonId'].toString().length -7))
+            .toList();
+
+          return PageView(
+            children: subjectsSnapshot.map((subjectsSnapshot) {
+              final title = subjectsSnapshot.get('name');
+              final imageURL = subjectsSnapshot.get('image');
+              final subjectId = subjectsSnapshot.get('id');
+
+              final countOfSpecificSubject = doneMapcardsIds
+                .where((subject) => subject == subjectId).length;
+
+              return MyMainCard(
+                title: title ??
+                    'No Title', // Set default title if "name" is missing
+                imagePath: imageURL ?? 'lib/assets/images/test/pic1.png',
+                progressValue: countOfSpecificSubject/32,
+                cardColor: Colors.blue,
+                progressColor: Colors.blue.shade700,
+                onTap: () => _goToSubjectLevel(subjectId),
+              );
+            }).toList(),
+          );
+        },
+      ),
+    );
+  }
+
+
 
   void _checkUsername(User? user) async {
     if (user != null) {
@@ -85,87 +168,4 @@ class _HomePageState extends State<HomePage> {
       }
     }
   }
-
-
-  @override
-  Widget build(BuildContext context) {
-    Provider.of<LanguageProvider>(context);
-    final FirebaseAuth _auth = FirebaseAuth.instance;
-    User? user = _auth.currentUser;
-
-    _checkUsername(user!);
-
-  
-    return Scaffold(
-      appBar: const CustomAppBar(),
-      body: FutureBuilder<QuerySnapshot>(
-        future: FirebaseFirestore.instance
-            .collection('Users')
-            .where('email', isEqualTo: user.email) 
-            .get(),
-        builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            return Text('Error: ${snapshot.error}');
-          }
-
-          if (!snapshot.hasData) {
-            return const Center(child: CircularProgressIndicator());
-          }
-
-          QuerySnapshot userData = snapshot.data!;
-          if (userData.docs.isEmpty) {
-            return const Text('User document not found!');
-          }
-
-          final DocumentSnapshot userDoc = userData.docs.first;
-          final userDataMap = userDoc.data() as Map<String, dynamic>;
-          if (!userDataMap.containsKey('language')) {
-            return const Text('Language not found');
-          }
-
-          final String language = userDataMap['language'];
-
-          
-        return FutureBuilder<QuerySnapshot>(       
-        future: FirebaseFirestore.instance
-        .collection('subjects')
-        .where('language', isEqualTo: language)
-        .get(),
-        builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            return Text('Error: ${snapshot.error}');
-          }
-
-          if (!snapshot.hasData) {
-            return const Center(child: CircularProgressIndicator());
-          }
-          
-
-          final categories = snapshot.data!.docs;
-
-          return PageView(
-            children: categories.map((category) {
-              final title = category.get('name');
-              final imageURL = category.get('image');
-              final subjectId = category.get('id'); // Document ID
-
-              return MyMainCard(
-                title: title ??
-                    'No Title', // Set default title if "name" is missing
-                imagePath: imageURL ?? 'lib/assets/images/test/pic1.png',
-                progressValue: 0.5,
-                cardColor: Colors.blue,
-                progressColor: Colors.blue.shade700,
-                onTap: () => _goToSubjectLevel(subjectId),
-              );
-            }).toList(),
-          );
-            },
-          );
-        },
-      ),
-    );
-  }
 }
-
-// comment 
