@@ -31,8 +31,8 @@ class _HomePageState extends State<HomePage> {
     _checkUsername(_user!);
   }
 
-  void _goToSubjectLevel(String subjectId) {
-    Navigator.push(
+  void _goToSubjectLevel(String subjectId) async {
+    await Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => subjectLevelPage(
@@ -40,6 +40,7 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
     );
+    setState(() {}); // Refresh the FutureBuilder when returning from the subject level page
   }
 
   @override

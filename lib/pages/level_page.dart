@@ -19,16 +19,17 @@ class subjectLevelPage extends StatefulWidget {
 
 class _subjectLevelPageState extends State<subjectLevelPage> {
 
-  void _goToProgressMapPage(String levelId, String subjectId) {
-    Navigator.push(
+  void _goToProgressMapPage(String levelId, String subjectId) async {
+    await Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => progressMapPage(
           selectedCardIndex: levelId, 
           selectedSubjectIndex: subjectId,
-        )
+        ),
       ),
     );
+    setState(() {}); // Refresh the FutureBuilder when returning from the progress map page
   }
 
   @override

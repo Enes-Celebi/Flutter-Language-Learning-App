@@ -1,8 +1,8 @@
 import "package:cloud_firestore/cloud_firestore.dart";
 import "package:firebase_auth/firebase_auth.dart";
 import "package:flutter/material.dart";
-import "package:lingoneer_beta_0_0_1/components/my_button.dart";
-import "package:lingoneer_beta_0_0_1/components/my_textfield.dart";
+import "package:lingoneer_beta_0_0_1/components/primary_button_component.dart";
+import "package:lingoneer_beta_0_0_1/components/primary_textfield_component.dart";
 import "package:lingoneer_beta_0_0_1/pages/subject_page.dart";
 import "package:lingoneer_beta_0_0_1/pages/login_page.dart";
 import "package:lingoneer_beta_0_0_1/services/language_provider.dart";
