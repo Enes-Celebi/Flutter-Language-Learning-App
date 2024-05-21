@@ -24,6 +24,13 @@ class LanguageProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void updateIntendedLanguage(String language) {
+    _intendedSelectedLanguage = language;
+    _updateCombinedLanguage();
+    print('Intended selected language: $language');
+    notifyListeners();
+  }
+
   void _updateCombinedLanguage() {
     // Get selected language with null check and provide default value if null
     String selectedLanguage = _selectedLanguage ?? '';
@@ -63,7 +70,7 @@ class LanguageProvider extends ChangeNotifier {
         return null;
       }
     } catch (e) {
-      print('Error fetching langugae image URL: $e');
+      print('Error fetching language image URL: $e');
       return null;
     }
   }

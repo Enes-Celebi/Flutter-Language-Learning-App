@@ -7,27 +7,36 @@ import 'package:lingoneer_beta_0_0_1/pages/subject_level_page.dart';
 import 'package:lingoneer_beta_0_0_1/services/language_provider.dart';
 import 'package:provider/provider.dart';
 
-
 class HomePage extends StatefulWidget {
-  final String? selectedLanguageComb;
+  final String? selectedLanguageComb; // this is useless
 
   const HomePage({
-    super.key,
-    required this.selectedLanguageComb
-  });
+    Key? key,
+    required this.selectedLanguageComb,
+  }) : super(key: key);
 
   @override
   State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
+  late FirebaseAuth _auth;
+  late User? _user;
+
+  @override
+  void initState() {
+    super.initState();
+    _auth = FirebaseAuth.instance;
+    _user = _auth.currentUser;
+    _checkUsername(_user!);
+  }
 
   void _goToSubjectLevel(String subjectId) {
     Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => subjectLevelPage(
-          selectedCardIndex: subjectId
+          selectedCardIndex: subjectId,
         ),
       ),
     );
@@ -35,28 +44,23 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    Provider.of<LanguageProvider>(context);
-    final FirebaseAuth _auth = FirebaseAuth.instance;
-    User? user = _auth.currentUser;
-
-    _checkUsername(user!);
-  
+    final selectedLanguageCombination = Provider.of<LanguageProvider>(context).languageComb;
     return Scaffold(
       appBar: const CustomAppBar(),
       body: FutureBuilder<List<QuerySnapshot>>(
         future: Future.wait([
           FirebaseFirestore.instance
-            .collection('subjects')
-            .where('language', isEqualTo: widget.selectedLanguageComb)
-            .get(),
+              .collection('subjects')
+              .where('language', isEqualTo: selectedLanguageCombination)
+              .get(),
           FirebaseFirestore.instance
-            .collection('Users')
-            .where('email', isEqualTo: user.email) 
-            .get(),
+              .collection('Users')
+              .where('email', isEqualTo: _user!.email)
+              .get(),
           FirebaseFirestore.instance
-            .collection('progress')
-            .where('userId', isEqualTo: user?.uid)
-            .get(),
+              .collection('progress')
+              .where('userId', isEqualTo: _user!.uid)
+              .get(),
         ]),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
@@ -68,7 +72,7 @@ class _HomePageState extends State<HomePage> {
           }
 
           final subjectsSnapshot = snapshot.data![0].docs;
-          QuerySnapshot userData = snapshot.data![1]!;
+          QuerySnapshot userData = snapshot.data![1];
           final progressSnapshot = snapshot.data![2];
 
           final DocumentSnapshot userDoc = userData.docs.first;
@@ -78,9 +82,8 @@ class _HomePageState extends State<HomePage> {
           }
 
           final doneMapcardsIds = progressSnapshot.docs
-            .map((doc) => doc['lessonId'].toString()
-            .substring(0, doc['lessonId'].toString().length -7))
-            .toList();
+              .map((doc) => doc['lessonId'].toString().substring(0, doc['lessonId'].toString().length - 7))
+              .toList();
 
           return PageView(
             children: subjectsSnapshot.map((subjectsSnapshot) {
@@ -88,14 +91,13 @@ class _HomePageState extends State<HomePage> {
               final imageURL = subjectsSnapshot.get('image');
               final subjectId = subjectsSnapshot.get('id');
 
-              final countOfSpecificSubject = doneMapcardsIds
-                .where((subject) => subject == subjectId).length;
+              final countOfSpecificSubject =
+                  doneMapcardsIds.where((subject) => subject == subjectId).length;
 
               return MyMainCard(
-                title: title ??
-                    'No Title', // Set default title if "name" is missing
+                title: title ?? 'No Title', // Set default title if "name" is missing
                 imagePath: imageURL ?? 'lib/assets/images/test/pic1.png',
-                progressValue: countOfSpecificSubject/32,
+                progressValue: countOfSpecificSubject / 32,
                 cardColor: Colors.blue,
                 progressColor: Colors.blue.shade700,
                 onTap: () => _goToSubjectLevel(subjectId),
@@ -107,9 +109,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-
-
-  void _checkUsername(User? user) async {
+  void _checkUsername(User user) async {
     if (user != null) {
       final userData = await FirebaseFirestore.instance
           .collection('Users')

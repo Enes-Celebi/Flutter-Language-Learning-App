@@ -1,324 +1,179 @@
-import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart'; // Import Firestore
-import 'package:lingoneer_beta_0_0_1/pages/account_settings.dart';
-import 'package:lingoneer_beta_0_0_1/pages/login_page.dart';
+import 'package:lingoneer_beta_0_0_1/components/appbar.dart';
 import 'package:lingoneer_beta_0_0_1/services/language_provider.dart';
-import 'package:lingoneer_beta_0_0_1/themes/theme_provider.dart';
 import 'package:provider/provider.dart';
 
-class SettingsPage extends StatelessWidget {
+class SettingsPage extends StatefulWidget {
   final _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  SettingsPage({
-    super.key,
-  });
+  SettingsPage({super.key});
+
+  @override
+  State<SettingsPage> createState() => _SettingsPageState();
+}
+
+class _SettingsPageState extends State<SettingsPage> {
+  bool isDarkMode = false;
 
   @override
   Widget build(BuildContext context) {
     final languageProvider = Provider.of<LanguageProvider>(context);
+    final String? languageId = languageProvider.selectedLanguage;
     final String? intendedLanguageId = languageProvider.intendedSelectedLanguage;
 
     return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(150),
-        child: Stack(
+      appBar: const CustomAppBar(),
+      body: FutureBuilder<List<QuerySnapshot>>(
+        future: Future.wait([
+          FirebaseFirestore.instance
+              .collection('languages')
+              .where('language', isEqualTo: languageId)
+              .get(),
+          FirebaseFirestore.instance
+              .collection('intended_languages')
+              .where('language', isEqualTo: intendedLanguageId)
+              .get(),
+        ]),
+        builder: (context, AsyncSnapshot<List<QuerySnapshot>> snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return Center(child: Text('No data found'));
+          } else {
+            final languageData = snapshot.data![0].docs;
+            final intendedLanguageData = snapshot.data![1].docs;
+
+            // Extract the image paths with null checks and casting
+            final String languageImage = languageData.isNotEmpty
+                ? (languageData.first.data() as Map<String, dynamic>)['image'] ?? 'No image'
+                : 'No data';
+            final String intendedLanguageImage = intendedLanguageData.isNotEmpty
+                ? (intendedLanguageData.first.data() as Map<String, dynamic>)['image'] ?? 'No image'
+                : 'No data';
+
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text(
+                        'Dark Mode',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),
+                      ),
+                      const SizedBox(width: 20),
+                      Switch(
+                        value: isDarkMode,
+                        onChanged: (value) {
+                          setState(() {
+                            isDarkMode = value;
+                          });
+                        },
+                        activeColor: Colors.blue,
+                      )
+                    ],
+                  ),
+                  const SizedBox(height: 20),
+                  GestureDetector(
+                    onTap: () {
+                      _showIntendedLanguageDialog(context);
+                    },
+                    child: Image.asset(
+                      intendedLanguageImage,
+                      width: 80,
+                      height: 80,
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    isDarkMode ? 'Theme is Dark' : 'Theme isn\'t Dark',
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: isDarkMode ? Colors.white : Colors.black,
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }
+        },
+      ),
+    );
+  }
+  Future<void> _showIntendedLanguageDialog(BuildContext context) async {
+  QuerySnapshot<Map<String, dynamic>> languagesSnapshot =
+      await widget._firestore.collection('intended_languages').get();
+
+  List<String> languageNames = languagesSnapshot.docs
+      .map((doc) => doc.data()['name'] as String)
+      .toList();
+
+  List<String> languageIds = languagesSnapshot.docs
+      .map((doc) => doc.data()['language'] as String)
+      .toList();
+
+  List<String> languageImages = languagesSnapshot.docs
+      .map((doc) => doc.data()['image'] as String)
+      .toList();
+
+  // Display bottom sheet with language selection
+  showModalBottomSheet(
+    context: context,
+    isScrollControlled: true,
+    builder: (BuildContext context) {
+      return Container(
+        height: MediaQuery.of(context).size.height * 0.5,
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
-            Padding(
-              padding: const EdgeInsets.only(bottom: 20.0),
-              child: AppBar(
-                automaticallyImplyLeading: false,
-                backgroundColor: const Color.fromARGB(255, 224, 224, 224),
-                shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(10),
-                    bottomRight: Radius.circular(10),
-                  ),
-                ),
-              ),
+            const Text(
+              'What language do you want to learn?',
+              style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
             ),
-            Positioned(
-              top: 100,
-              left: 15,
-              child: Container(
-                width: 80, 
-                height: 80, 
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.white,
-                  border: Border.all(
-                    color: Colors.white,
-                    width: 8,
-                  ),
-                ),
-                child: Container(
-                  width: 90,
-                  height: 90,
-                  decoration: const BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Colors.blue,
-                  ),
-                ),
-              ),
-            ),
-            Positioned(
-              right: 30,
-              top: 120,
-              child: GestureDetector(
-                onTap: () {
-                  // Open language selection dialog
-                  _showIntendedLanguageDialog(context);
+            const SizedBox(height: 10.0),
+            Expanded(
+              child: PageView.builder(
+                itemCount: languageNames.length,
+                itemBuilder: (context, index) {
+                  return GestureDetector(
+                    onTap: () {
+                      // Update the intended language value in the language provider class
+                      Provider.of<LanguageProvider>(context, listen: false)
+                          .setIntendedSelectedLanguage(languageIds[index]);
+                      Navigator.of(context).pop(); // Close the bottom sheet
+                    },
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Image.asset(
+                          languageImages[index],
+                          width: 100.0,
+                          height: 100.0,
+                          fit: BoxFit.contain,
+                        ),
+                        const SizedBox(height: 10.0),
+                        Text(languageNames[index]),
+                      ],
+                    ),
+                  );
                 },
-                child: Container(
-                  width: 60.0,
-                  height: 60.0,
-                  decoration: const BoxDecoration(),
-                    child: FutureBuilder<String?>(
-                      future: Provider.of<LanguageProvider>(context)
-                        .getIntendedLanguageImageURL(),
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState == ConnectionState.waiting) {
-                          return CircularProgressIndicator();
-                        } else if (snapshot.hasError) {
-                          return Icon(Icons.error);
-                        } else if (snapshot.hasData) {
-                          // Check if the snapshot data is not null
-                          String? imageUrl = snapshot.data;
-                          if (imageUrl != null && imageUrl.isNotEmpty) {
-                            return ClipRRect(
-                              child: Image.asset(
-                                imageUrl, // Use Image.asset instead of Image.network
-                                fit: BoxFit.contain,
-                              ),
-                            );
-                          } else {
-                            return Text("No image available");
-                          }
-                        } else {
-                          return Text("No data available");
-                        }
-                      },
-                  )
-                )
               ),
             ),
           ],
         ),
-      ),
-      body: FutureBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-        future: _firestore.collection('intended_languages').doc(intendedLanguageId).get(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
-          }
-
-          if (snapshot.hasError) {
-            return Text('Error: ${snapshot.error}');
-          }
-
-          final languageData = snapshot.data!.data();
-          final String? intendedLanguage = languageData?['name'];
-          final String? intendedLanguageImage = languageData?['image'];
-
-          return ListView(
-            children: [
-              ListTile(
-                title: const Text('Account'),
-                trailing: const Icon(Icons.chevron_right),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => GeneralSettingsPage()),
-                  );
-                },
-              ),
-              ListTile(
-                title: const Text('Dark Mode'),
-                trailing: Consumer<ThemeProvider>(
-                  builder: (context, themeProvider, child) => Switch(
-                    value: themeProvider.isDarkMode,
-                    onChanged: (value) => themeProvider.toggleTheme(),
-                  ),
-                ),
-              ),
-              ListTile(
-                title: const Text('User Language'),
-                trailing: GestureDetector(
-                  onTap: () {
-                    // Open user language selection dialog
-                    _showUserLanguageDialog(context);
-                  },
-                  child: Container(
-                    decoration: const BoxDecoration(),
-                    child: FutureBuilder<String?>(
-                      future: Provider.of<LanguageProvider>(context)
-                        .getIntendedLanguageImageURL(),
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState == ConnectionState.waiting) {
-                          return CircularProgressIndicator();
-                        } else if (snapshot.hasError) {
-                          return Icon(Icons.error);
-                        } else if (snapshot.hasData) {
-                          return ClipRRect(
-                            child: Image.network(
-                              snapshot.data!,
-                              fit: BoxFit.contain,
-                            ),
-                          );
-                        } else {
-                          return Text("No data available");
-                        }
-                      },
-                    ),
-                  ),
-                ),
-                onTap: () {},
-              ),
-              ListTile(
-                title: const Text('Sign Out'),
-                trailing: const Icon(Icons.logout),
-                onTap: () async {
-                  await _auth.signOut();
-
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const LoginPage(
-                        onTap: null,
-                      ),
-                    ),
-                  );
-                },
-              ),
-            ],
-          );
-        },
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // Navigate back to home screen
-          Navigator.pop(context);
-        },
-        child: const Icon(Icons.arrow_back),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
-    );
-  }
-
-  String? getImageForLanguage(String? language) {
-
-  }
-
-  // Function to show language selection dialog
-  Future<void> _showIntendedLanguageDialog(BuildContext context) async {
-    QuerySnapshot<Map<String, dynamic>> languagesSnapshot =
-        await _firestore.collection('intended_languages').get(); // Fetch languages from Firestore
-
-    List<String> languageNames = languagesSnapshot.docs
-        .map((doc) => doc.data()['name'] as String) // Get language names
-        .toList();
-
-    List<String> languageImages = languagesSnapshot.docs
-        .map((doc) => doc.data()['image'] as String) // Get local image asset paths
-        .toList();
-
-    // Display bottom sheet with language selection
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true, // Allow the bottom sheet to occupy half of the screen
-      builder: (BuildContext context) {
-        return Container(
-          height: MediaQuery.of(context).size.height * 0.5, // Set the height to half of the screen
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Text(
-                'What language do you want to learn?',
-                style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 10.0),
-              Expanded(
-                child: PageView.builder(
-                  itemCount: languageNames.length,
-                  itemBuilder: (context, index) {
-                    return Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [// Display language name
-                        Image.asset(
-                          languageImages[index], // Load local image asset
-                          width: 100.0,
-                          height: 100.0,
-                          fit: BoxFit.contain,
-                        ),
-                        const SizedBox(height: 10.0),
-                        Text(languageNames[index]), 
-                      ],
-                    );
-                  },
-                ),
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
-    // Function to show language selection dialog
-  Future<void> _showUserLanguageDialog(BuildContext context) async {
-    QuerySnapshot<Map<String, dynamic>> languagesSnapshot =
-        await _firestore.collection('languages').get(); // Fetch languages from Firestore
-
-    List<String> languageNames = languagesSnapshot.docs
-        .map((doc) => doc.data()['name'] as String) // Get language names
-        .toList();
-
-    List<String> languageImages = languagesSnapshot.docs
-        .map((doc) => doc.data()['image'] as String) // Get local image asset paths
-        .toList();
-
-    // Display bottom sheet with language selection
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true, // Allow the bottom sheet to occupy half of the screen
-      builder: (BuildContext context) {
-        return Container(
-          height: MediaQuery.of(context).size.height * 0.5, // Set the height to half of the screen
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Text(
-                'What language do you speak?',
-                style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 10.0),
-              Expanded(
-                child: PageView.builder(
-                  itemCount: languageNames.length,
-                  itemBuilder: (context, index) {
-                    return Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [// Display language name
-                        Image.asset(
-                          languageImages[index], // Load local image asset
-                          width: 100.0,
-                          height: 100.0,
-                          fit: BoxFit.contain,
-                        ),
-                        const SizedBox(height: 10.0),
-                        Text(languageNames[index]), 
-                      ],
-                    );
-                  },
-                ),
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
+      );
+    },
+  );
+}
 }

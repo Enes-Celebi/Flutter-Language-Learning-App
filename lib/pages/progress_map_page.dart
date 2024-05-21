@@ -82,9 +82,7 @@ Widget build(BuildContext context) {
         }
 
         final mapCards = mapCardsSnapshot.docs;
-        final mapCardsSubject = mapCardSubjectSnapshot.docs;
         final donelessonIds = progressSnapshot.docs.map((doc) => doc['lessonId']).toList();
-        final donelessonIdsSubject = progressSnapshot.docs.map((doc) => doc['lessonId']).toList();
 
 
         return SingleChildScrollView(
@@ -96,7 +94,6 @@ Widget build(BuildContext context) {
               final mapCardId = mapCard.get('id');
 
               final bool isSelectedCardIndexInLessonIds = donelessonIds.contains(mapCardId);
-              final bool isSelectedCardIndexInLessonIdsSubject = donelessonIdsSubject.contains(mapCardsSubject);
 
               return ProgressMapCard(
                 title: title ?? 'No Title',
