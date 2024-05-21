@@ -3,7 +3,7 @@ import "package:firebase_auth/firebase_auth.dart";
 import "package:flutter/material.dart";
 import "package:lingoneer_beta_0_0_1/components/my_button.dart";
 import "package:lingoneer_beta_0_0_1/components/my_textfield.dart";
-import "package:lingoneer_beta_0_0_1/pages/home_page.dart";
+import "package:lingoneer_beta_0_0_1/pages/subject_page.dart";
 import "package:lingoneer_beta_0_0_1/pages/login_page.dart";
 import "package:lingoneer_beta_0_0_1/services/language_provider.dart";
 import "package:provider/provider.dart";
@@ -35,22 +35,20 @@ class _RegisterPageState extends State<RegisterPage> {
           password: passwordController.text,
         );
 
-        if (user != null) {
-          await FirebaseFirestore.instance
-              .collection('Users')
-              .doc(user.user!.uid)
-              .set({
-            'userId': user.user!.uid,
-            'email': user.user!.email,
-            'language': languageComb,
-          });
+        await FirebaseFirestore.instance
+            .collection('Users')
+            .doc(user.user!.uid)
+            .set({
+          'userId': user.user!.uid,
+          'email': user.user!.email,
+          'language': languageComb,
+        });
 
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => HomePage(selectedLanguageComb: languageComb)),
-          );
-        }
-      } catch (e) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => HomePage(selectedLanguageComb: languageComb)),
+        );
+            } catch (e) {
         String message = "Sign Up failed";
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(

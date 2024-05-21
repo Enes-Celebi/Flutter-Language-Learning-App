@@ -1,8 +1,8 @@
 import "package:cloud_firestore/cloud_firestore.dart";
 import "package:firebase_auth/firebase_auth.dart";
 import "package:flutter/material.dart";
-import "package:lingoneer_beta_0_0_1/components/appbar.dart";
-import "package:lingoneer_beta_0_0_1/components/progress_map_card.dart";
+import "package:lingoneer_beta_0_0_1/components/appbar_component.dart";
+import "package:lingoneer_beta_0_0_1/components/mapcard_component.dart";
 import "package:lingoneer_beta_0_0_1/pages/lesson_page.dart";
 import "package:lingoneer_beta_0_0_1/pages/test_page.dart";
 

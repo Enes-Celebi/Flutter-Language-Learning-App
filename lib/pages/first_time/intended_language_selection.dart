@@ -2,7 +2,7 @@ import "package:cloud_firestore/cloud_firestore.dart";
 import "package:flutter/material.dart";
 import "package:lingoneer_beta_0_0_1/components/first_time_flag.dart";
 import "package:lingoneer_beta_0_0_1/pages/login_page.dart";
-import "package:lingoneer_beta_0_0_1/pages/register_page.dart";
+import "package:lingoneer_beta_0_0_1/pages/signup_page.dart";
 import "package:lingoneer_beta_0_0_1/services/language_provider.dart";
 import "package:provider/provider.dart";
 

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:lingoneer_beta_0_0_1/pages/profile_settings_page.dart';
+import 'package:lingoneer_beta_0_0_1/pages/settings_page.dart';
 
 // custom_app_bar.dart
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {

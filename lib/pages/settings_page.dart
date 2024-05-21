@@ -1,12 +1,10 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart'; // Import Firestore
-import 'package:lingoneer_beta_0_0_1/components/appbar.dart';
+import 'package:lingoneer_beta_0_0_1/components/appbar_component.dart';
 import 'package:lingoneer_beta_0_0_1/services/language_provider.dart';
 import 'package:provider/provider.dart';
 
 class SettingsPage extends StatefulWidget {
-  final _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   SettingsPage({super.key});
@@ -45,13 +43,13 @@ class _SettingsPageState extends State<SettingsPage> {
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
             return Center(child: Text('No data found'));
           } else {
-            final languageData = snapshot.data![0].docs;
+            //final languageData = snapshot.data![0].docs;
             final intendedLanguageData = snapshot.data![1].docs;
 
             // Extract the image paths with null checks and casting
-            final String languageImage = languageData.isNotEmpty
-                ? (languageData.first.data() as Map<String, dynamic>)['image'] ?? 'No image'
-                : 'No data';
+            // final String languageImage = languageData.isNotEmpty
+            //     ? (languageData.first.data() as Map<String, dynamic>)['image'] ?? 'No image'
+            //     : 'No data';
             final String intendedLanguageImage = intendedLanguageData.isNotEmpty
                 ? (intendedLanguageData.first.data() as Map<String, dynamic>)['image'] ?? 'No image'
                 : 'No data';
