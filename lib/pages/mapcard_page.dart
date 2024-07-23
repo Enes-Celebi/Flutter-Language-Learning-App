@@ -9,12 +9,14 @@ import "package:lingoneer_beta_0_0_1/pages/test_page.dart";
 class progressMapPage extends StatefulWidget {
   final String selectedCardIndex;
   final String selectedSubjectIndex;
+  final Color levelCardColor;
 
   const progressMapPage({
-    super.key,
+    Key? key,
     required this.selectedCardIndex,
     required this.selectedSubjectIndex,
-  });
+    required this.levelCardColor,
+  }) : super(key: key);
 
   @override
   State<progressMapPage> createState() => _progressMapPageState();
@@ -45,6 +47,8 @@ class _progressMapPageState extends State<progressMapPage> {
   Widget build(BuildContext context) {
     final FirebaseAuth _auth = FirebaseAuth.instance;
     User? user = _auth.currentUser;
+    Color cardBorder = widget.levelCardColor.withOpacity(0.1);
+
     return Scaffold(
       appBar: const CustomAppBar(),
       body: FutureBuilder<List<QuerySnapshot>>(
@@ -79,8 +83,11 @@ class _progressMapPageState extends State<progressMapPage> {
             return const Center(child: Text('No mapcards found.'));
           }
 
-          final mapCards = mapCardsSnapshot.docs;
+          var mapCards = mapCardsSnapshot.docs;
           final donelessonIds = progressSnapshot.docs.map((doc) => doc['lessonId']).toList();
+
+          // Sort mapCards by the 'order' field
+          mapCards.sort((a, b) => (a['order'] as int).compareTo(b['order'] as int));
 
           return SingleChildScrollView(
             child: Column(
@@ -90,14 +97,17 @@ class _progressMapPageState extends State<progressMapPage> {
                 final type = mapCard.get('type');
                 final mapCardId = mapCard.get('id');
 
-                final bool isSelectedCardIndexInLessonIds = donelessonIds.contains(mapCardId);
+                // Determine the status image path based on whether the lesson is completed
+                final statusImagePath = donelessonIds.contains(mapCardId)
+                    ? 'lib/assets/images/icons/done.png'
+                    : 'lib/assets/images/icons/undone.png';
 
                 return ProgressMapCard(
                   title: title ?? 'No Title',
                   lessonImagePath: imageURL ?? 'lib/assets/images/test/pic1.png',
-                  statusImagePath: 'lib/assets/images/icons/locked.png',
-                  cardColor: isSelectedCardIndexInLessonIds ? Colors.green[300]! : Colors.blue[300]!,
-                  borderColor: Colors.blue[200]!,
+                  statusImagePath: statusImagePath,
+                  cardColor: widget.levelCardColor.withOpacity(0.8),  // Keep the card color consistent
+                  borderColor: widget.levelCardColor,
                   onTap: () {
                     if (type == 'lesson') {
                       _goToLessonPage(mapCardId);

@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:lingoneer_beta_0_0_1/components/test_component.dart';
 import 'package:lingoneer_beta_0_0_1/pages/test_completion_page.dart';
 
 class TestPage extends StatefulWidget {
   final String selectedCardIndex;
 
   const TestPage({
-    super.key, 
-    required this.selectedCardIndex
-  });
+    Key? key,
+    required this.selectedCardIndex,
+  }) : super(key: key);
 
   @override
   _TestPageState createState() => _TestPageState();
@@ -23,7 +24,7 @@ class _TestPageState extends State<TestPage> {
     return Scaffold(
       body: FutureBuilder<QuerySnapshot>(
         future: FirebaseFirestore.instance
-        .collection('tests')
+            .collection('tests')
             .where('mapcard', isEqualTo: widget.selectedCardIndex)
             .get(),
         builder: (context, snapshot) {
@@ -40,46 +41,16 @@ class _TestPageState extends State<TestPage> {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const SizedBox(height: 50), // Padding from the top
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16), // Horizontal padding
-                child: LinearProgressIndicator(
-                  value: (_currentIndex + 1) / _testData.length,
-                  minHeight: 15, // Increase the height
-                  backgroundColor: Colors.grey[300], // Background color
-                  valueColor: const AlwaysStoppedAnimation<Color>(Colors.blue), // Progress color
-                  borderRadius: BorderRadius.circular(10), // Rounded corners
-                ),
-              ),
               const SizedBox(height: 16), // Spacing below the progress bar
               Expanded(
                 child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      if (_testData.isNotEmpty && _testData[_currentIndex]['image'] != null)
-                        Image.network(
-                          _testData[_currentIndex]['image'],
-                          width: 200,
-                          height: 200,
-                          errorBuilder: (context, error, stackTrace) {
-                            // Return a fallback image when the URL is invalid
-                            return Image.asset(
-                              'assets/images/error_image.png', // Path to the fallback image
-                              width: 200,
-                              height: 200,
-                            );
-                          },
-                        ),
-                      if (_testData.isNotEmpty && _testData[_currentIndex]['image'] != null) const SizedBox(height: 16), // Additional space between image and question
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16), // Horizontal padding for the question
-                        child: Text(
-                          _testData[_currentIndex]['question'],
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                    ],
+                  child: TestComponent( // Use the TestComponent here
+                    imageUrl: _testData.isNotEmpty ? _testData[_currentIndex]['image'] : null,
+                    question: _testData.isNotEmpty ? _testData[_currentIndex]['question'] : '',
+                    text: _testData.isNotEmpty ? _testData[_currentIndex]['text'] : '',
+                    progress: (_currentIndex + 1) / _testData.length,
+                    onOptionSelected: _handleOptionSelection,
+                    audioUrl: _testData.isNotEmpty ? _testData[_currentIndex]['audio'] : null,
                   ),
                 ),
               ),
@@ -105,20 +76,7 @@ class _TestPageState extends State<TestPage> {
                   );
                 }).toList(),
               ),
-              const SizedBox(height: 16), // Spacing below the options
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  ElevatedButton(
-                    onPressed: _currentIndex > 0 ? () => setState(() => _currentIndex--) : null,
-                    child: const Text('Back'),
-                  ),
-                  ElevatedButton(
-                    onPressed: _currentIndex < _testData.length - 1 ? () => setState(() => _currentIndex++) : null,
-                    child: const Text('Next'),
-                  ),
-                ],
-              ),
+              const SizedBox(height: 60),
             ],
           );
         },
@@ -174,13 +132,11 @@ class _TestPageState extends State<TestPage> {
   }
 
   void _showTestCompletionPage() {
-  Navigator.push(
-    context,
-    MaterialPageRoute(
-      builder: (context) => TestCompletionPage(selectedCardIndex: widget.selectedCardIndex,isLesson: false,),
-    ),
-  );
-}
-
-
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => TestCompletionPage(selectedCardIndex: widget.selectedCardIndex, isLesson: false),
+      ),
+    );
+  }
 }

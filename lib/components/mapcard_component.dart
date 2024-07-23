@@ -58,10 +58,17 @@ class ProgressMapCard extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 5),
-                      Image.asset(
+                      Image.network(
                         lessonImagePath,
                         width: 50,
                         height: 50,
+                        errorBuilder: (context, error, stackTrace) {
+                          return Image.asset(
+                            'lib/assets/images/test/pic1.png',
+                            width: 50,
+                            height: 50,
+                          );
+                        },
                       ),
                     ],
                   ),

@@ -78,7 +78,7 @@ class _IntendedLanguageSelectionState extends State<IntendedLanguageSelection> {
                     child: Center( // Center the text horizontally
                       child: Text(
                         // Access 'name' from the document data
-                        'Choose language do you want to learn',
+                        'Choose the language you want to learn',
                         style: TextStyle(
                           fontSize: 18,
                         ),

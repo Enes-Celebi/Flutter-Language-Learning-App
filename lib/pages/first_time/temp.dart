@@ -1,4 +1,6 @@
 import "dart:async";
+import "dart:html";
+
 import "package:cloud_firestore/cloud_firestore.dart";
 import "package:flutter/material.dart";
 import "package:lingoneer_beta_0_0_1/components/primary_searchbar_component.dart";
@@ -16,16 +18,15 @@ class LanguageSelection extends StatefulWidget {
 class _LanguageSelectionState extends State<LanguageSelection> with TickerProviderStateMixin {
   final ScrollController _scrollController = ScrollController();
   final TextEditingController _searchController = TextEditingController();
-  final ValueNotifier<String> _currentLanguageNameNotifier = ValueNotifier<String>('');
+  String _currentLanguageName = '';
+  int _currentIntersectingIndex = -1;
   List<DocumentSnapshot> _languages = [];
-  List<DocumentSnapshot> _filteredLanguages = [];
   List<String> _texts = [];
   int _currentTextIndex = 0;
   Timer? _textSwitchTimer;
   bool _isTextVisible = true;
   final double padding = 260;
   final double itemWidth = 100;
-  int _currentIntersectingIndex = -1; // Define _currentIntersectingIndex
 
   late AnimationController _animationController;
   late Animation<double> _animation;
@@ -73,7 +74,14 @@ class _LanguageSelectionState extends State<LanguageSelection> with TickerProvid
       )
     ]).animate(_buttonAnimationController);
 
-    _fetchAllTexts();
+    _animationController = AnimationController(
+      duration: const Duration(seconds: 1),
+      vsync: this,
+    )..repeat(reverse: true);
+
+    _animation = Tween<double>(begin: 1.0, end: 1.1).animate(_animationController);
+
+    _fetchTexts();
   }
 
   void _startButtonAnimation() {
@@ -87,11 +95,10 @@ class _LanguageSelectionState extends State<LanguageSelection> with TickerProvid
     _animationController.dispose();
     _buttonAnimationController.dispose();
     _textSwitchTimer?.cancel();
-    _currentLanguageNameNotifier.dispose();
     super.dispose();
   }
 
-  Future<void> _fetchAllTexts() async {
+  void _fetchTexts() async {
     final snapshot = await FirebaseFirestore.instance.collection('languages').get();
     setState(() {
       _texts = snapshot.docs.map((doc) => doc['text'] as String).toList();
@@ -115,35 +122,27 @@ class _LanguageSelectionState extends State<LanguageSelection> with TickerProvid
   }
 
   void _updateCurrentLanguage() {
-    if (_filteredLanguages.isEmpty) return;
+    if (_languages.isEmpty) return;
 
     final totalItemWidth = itemWidth + padding;
     final centerPosition = MediaQuery.of(context).size.width / 2;
-    final scrollOffset = _scrollController.offset;
 
-    int newIntersectingIndex = -1;
-
-    for (int index = 0; index < _filteredLanguages.length; index++) {
-      final itemStartPosition = (index * totalItemWidth) - scrollOffset + padding / 2;
+    for (int index = 0; index < _languages.length; index++) {
+      final itemStartPosition = (index * totalItemWidth) - _scrollController.offset + padding / 2;
       final itemEndPosition = itemStartPosition + itemWidth;
 
       if (itemStartPosition < centerPosition && itemEndPosition > centerPosition) {
-        newIntersectingIndex = index;
-        final languageData = _filteredLanguages[index];
+        final languageData = _languages[index];
         final languageName = languageData.get('name') ?? '';
-        if (_currentLanguageNameNotifier.value != languageName) {
-          _currentLanguageNameNotifier.value = languageName;
-          _startButtonAnimation();
+        if (index != _currentIntersectingIndex) {
+          setState(() {
+            _currentIntersectingIndex = index;
+            _currentLanguageName = languageName;
+            _startButtonAnimation();
+          });
         }
         break;
       }
-    }
-
-    // Update _currentIntersectingIndex only if it has changed
-    if (_currentIntersectingIndex != newIntersectingIndex) {
-      setState(() {
-        _currentIntersectingIndex = newIntersectingIndex;
-      });
     }
   }
 
@@ -159,19 +158,6 @@ class _LanguageSelectionState extends State<LanguageSelection> with TickerProvid
         builder: (context) => IntendedLanguageSelection(onTap: () {})
       ),
     );
-  }
-
-  void _filterLanguages(String query) {
-    setState(() {
-      _filteredLanguages = _languages.where((language) {
-        final hook = (language.get('hook') ?? '') as String;
-        final keywords = hook.split(',').map((s) => s.trim().toLowerCase()).toList();
-        return keywords.any((keyword) => keyword.contains(query.toLowerCase()));
-      }).toList();
-
-      // Ensure the current language is updated after filtering
-      _updateCurrentLanguage();
-    });
   }
 
   @override
@@ -190,9 +176,8 @@ class _LanguageSelectionState extends State<LanguageSelection> with TickerProvid
 
           _languages = snapshot.data!.docs;
 
-          // Ensure to update the filtered languages list after fetching all languages
           WidgetsBinding.instance.addPostFrameCallback((_) {
-            _filterLanguages(_searchController.text); // Filter based on current search text
+            _updateCurrentLanguage();
           });
 
           return Stack(
@@ -218,7 +203,7 @@ class _LanguageSelectionState extends State<LanguageSelection> with TickerProvid
       child: Align(
         alignment: Alignment.topCenter,
         child: Image.asset('lib/assets/images/icons/appnamelogo.png'),
-      ),
+      )
     );
   }
 
@@ -255,7 +240,7 @@ class _LanguageSelectionState extends State<LanguageSelection> with TickerProvid
         hintText: 'Search...',
         obscureText: false,
         onSearchPressed: () {
-          _filterLanguages(_searchController.text);
+          // Implement search functionality here
         },
         onArrowPressed: () {
           // Implement action on arrow pressed
@@ -266,25 +251,19 @@ class _LanguageSelectionState extends State<LanguageSelection> with TickerProvid
 
   Widget _buildCurrentLanguageName() {
     return Positioned(
-      top: 380,
+      top: 300,
       left: 0,
       right: 0,
       child: Align(
         alignment: Alignment.topCenter,
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 20),
-          child: ValueListenableBuilder<String>(
-            valueListenable: _currentLanguageNameNotifier,
-            builder: (context, languageName, child) {
-              return Text(
-                languageName.isNotEmpty ? languageName : 'Select a language',
-                style: const TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
-                textAlign: TextAlign.center,
-              );
-            },
+          child: Text(
+            _currentLanguageName,
+            style: const TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ),
       ),
@@ -307,13 +286,13 @@ class _LanguageSelectionState extends State<LanguageSelection> with TickerProvid
               return ListView.builder(
                 scrollDirection: Axis.horizontal,
                 controller: _scrollController,
-                itemCount: _filteredLanguages.length,
+                itemCount: _languages.length,
                 itemBuilder: (context, index) {
                   final itemStartPosition = (index * totalItemWidth) - _scrollController.offset + padding / 2;
                   final itemEndPosition = itemStartPosition + itemWidth;
                   final isIntersecting = (itemStartPosition < centerPosition && itemEndPosition > centerPosition);
                   final flagColor = isIntersecting ? Colors.transparent : Colors.transparent;
-                  final languageData = _filteredLanguages[index];
+                  final languageData = _languages[index];
                   final imageURL = languageData.get('image') ?? 'lib/assets/images/test/pic1.png';
                   final scaleFactor = (index == _currentIntersectingIndex) ? 1.4 : 1.0;
 
@@ -330,7 +309,7 @@ class _LanguageSelectionState extends State<LanguageSelection> with TickerProvid
                             border: Border.all(
                               color: flagColor,
                               width: 2,
-                            ),
+                            )
                           ),
                           child: Image.asset(
                             imageURL,
@@ -338,7 +317,7 @@ class _LanguageSelectionState extends State<LanguageSelection> with TickerProvid
                           ),
                         ),
                       ),
-                    ),
+                    )
                   );
                 },
               );
@@ -352,7 +331,7 @@ class _LanguageSelectionState extends State<LanguageSelection> with TickerProvid
               width: 2,
               color: Colors.transparent,
             ),
-          ),
+          )
         ],
       ),
     );
@@ -374,7 +353,7 @@ class _LanguageSelectionState extends State<LanguageSelection> with TickerProvid
                 child: ElevatedButton(
                   onPressed: () {
                     if (_currentIntersectingIndex != -1) {
-                      final selectedLanguage = _filteredLanguages[_currentIntersectingIndex].data() as Map<String, dynamic>;
+                      final selectedLanguage = _languages[_currentIntersectingIndex].data() as Map<String, dynamic>;
                       _proceedToApp(selectedLanguage);
                     }
                   },
@@ -385,7 +364,7 @@ class _LanguageSelectionState extends State<LanguageSelection> with TickerProvid
                   ),
                   child: const Icon(Icons.arrow_forward, size: 20),
                 ),
-              ),
+              )
             );
           },
         ),

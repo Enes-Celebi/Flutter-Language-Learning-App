@@ -7,25 +7,45 @@ import "package:lingoneer_beta_0_0_1/pages/mapcard_page.dart";
 
 class subjectLevelPage extends StatefulWidget {
   final String selectedCardIndex;
+  final Color subjectCardColor;
 
   const subjectLevelPage({
-    super.key,
+    Key? key,
     required this.selectedCardIndex,
-  });
+    required this.subjectCardColor,
+  }) : super(key: key);
 
   @override
   State<subjectLevelPage> createState() => _subjectLevelPageState();
 }
 
-class _subjectLevelPageState extends State<subjectLevelPage> {
+class _subjectLevelPageState extends State<subjectLevelPage> with SingleTickerProviderStateMixin {
+  late AnimationController _animationController;
+
+  @override
+  void initState() {
+    super.initState();
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 1),
+    );
+    _animationController.forward();
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
 
   void _goToProgressMapPage(String levelId, String subjectId) async {
     await Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => progressMapPage(
-          selectedCardIndex: levelId, 
+          selectedCardIndex: levelId,
           selectedSubjectIndex: subjectId,
+          levelCardColor: widget.subjectCardColor,
         ),
       ),
     );
@@ -59,36 +79,51 @@ class _subjectLevelPageState extends State<subjectLevelPage> {
             return const Center(child: CircularProgressIndicator());
           }
 
+          print("Levels snapshot length: ${snapshot.data![0].docs.length}");
+          print("Progress snapshot length: ${snapshot.data![1].docs.length}");
+
           final levelsSnapshot = snapshot.data![0].docs;
           final progressSnapshot = snapshot.data![1];
 
+          // Extracting completed lessonIds from progressSnapshot
           final doneMapcardsIds = progressSnapshot.docs
-            .map((doc) => doc['lessonId'].toString()
-            .substring(0, doc['lessonId'].toString().length - 3))
-            .toList();
+              .map((doc) => doc['lessonId'].toString())
+              .toList();
+
+          // Sort levels by the 'order' field
+          levelsSnapshot.sort((a, b) => (a['order'] as int).compareTo(b['order'] as int));
 
           return SingleChildScrollView(
             child: Column(
-              children: levelsSnapshot.map((levelsSnapshot) {
-                final title = levelsSnapshot.get('name');
-                final imageURL = levelsSnapshot.get('image');
-                final levelId = levelsSnapshot.get('id');
-                final subjectId = levelsSnapshot.get('subject');
+              children: levelsSnapshot.map((levelSnapshot) {
+                final title = levelSnapshot.get('name');
+                final imageURL = levelSnapshot.get('image');
+                final levelId = levelSnapshot.get('id');
+                final subjectId = levelSnapshot.get('subject');
 
                 final countOfSpecificLevel = doneMapcardsIds
-                  .where((level) => level == levelId).length;
+                    .where((id) => id.startsWith(levelId))
+                    .length;
 
-                return SubjectLevelCard(
-                  title: title ??
-                      'No Title', // Set default title if "name" is missing
-                  imagePath: imageURL ?? 'lib/assets/images/test/pic1.png',
-                  progressValue: countOfSpecificLevel/8,
-                  cardColor: Colors.blue,
-                  progressColor: Colors.blue.shade700,
-                  onTap: () => _goToProgressMapPage(
-                      levelId,
-                      subjectId
-                    ), // Use document ID for navigation (optional)
+                final progressValue = countOfSpecificLevel / 8;
+
+                return AnimatedBuilder(
+                  animation: _animationController,
+                  builder: (context, child) {
+                    return SubjectLevelCard(
+                      title: title ?? 'No Title',
+                      imagePath: imageURL ?? 'lib/assets/images/test/pic1.png',
+                      progressValue: _animationController.drive(
+                        Tween(begin: 0.0, end: progressValue),
+                      ).value,
+                      cardColor: widget.subjectCardColor,
+                      progressColor: widget.subjectCardColor.withOpacity(0.7),
+                      onTap: () => _goToProgressMapPage(
+                        levelId,
+                        subjectId,
+                      ),
+                    );
+                  },
                 );
               }).toList(),
             ),

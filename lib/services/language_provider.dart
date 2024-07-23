@@ -32,12 +32,9 @@ class LanguageProvider extends ChangeNotifier {
   }
 
   void _updateCombinedLanguage() {
-    // Get selected language with null check and provide default value if null
     String selectedLanguage = _selectedLanguage ?? '';
-    // Get intended selected language with null check and provide default value if null
     String intendedSelectedLanguage = _intendedSelectedLanguage ?? '';
 
-    // Check if both selectedLanguage and intendedSelectedLanguage are not empty
     if (selectedLanguage.isNotEmpty && intendedSelectedLanguage.isNotEmpty) {
       _languageComb = '$selectedLanguage' + '_' + '$intendedSelectedLanguage';
       print('Language Combination: $_languageComb');

@@ -1,23 +1,24 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:lingoneer_beta_0_0_1/services/languages_map.dart';
+import 'package:lingoneer_beta_0_0_1/components/primary_button_component.dart';
+import 'package:lingoneer_beta_0_0_1/services/language_provider.dart';
+import 'package:provider/provider.dart';
 
-class GeneralSettingsPage extends StatelessWidget {
-  // Firebase Firestore instance (replace with your initialization)
+class GeneralSettingsPage extends StatefulWidget {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-
-  // Firebase Auth instance (replace with your initialization)
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  // Simulate fetching user data from somewhere (replace with actual logic)
-  // final String userLanguage = 'English'; // Add placeholder for user language
-  // final String learnedLanguage =
-  //     'Spanish'; // Add placeholder for learned language
+  GeneralSettingsPage({super.key});
+
+  @override
+  State<GeneralSettingsPage> createState() => _GeneralSettingsPageState();
+}
+
+class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
 
   void showUsernameDialog(BuildContext context, String currentUsername) {
-    final TextEditingController usernameController =
-        TextEditingController(text: currentUsername);
+    final TextEditingController usernameController = TextEditingController(text: currentUsername);
 
     showDialog(
       context: context,
@@ -26,7 +27,7 @@ class GeneralSettingsPage extends StatelessWidget {
           title: const Text('Edit Username'),
           content: TextField(
             controller: usernameController,
-            autofocus: true, // Automatically focus the text field
+            autofocus: true,
             decoration: const InputDecoration(
               hintText: 'Enter new username',
             ),
@@ -41,9 +42,8 @@ class GeneralSettingsPage extends StatelessWidget {
                 final newUsername = usernameController.text.trim();
                 if (newUsername.isNotEmpty) {
                   editUsername(newUsername);
-                  Navigator.pop(context); // Close the dialog
+                  Navigator.pop(context);
                 } else {
-                  // Show error message if username is empty
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
                       content: Text('Please enter a username'),
@@ -60,214 +60,239 @@ class GeneralSettingsPage extends StatelessWidget {
   }
 
   Future<void> editUsername(String newUsername) async {
-    final user = _auth.currentUser;
+    final user = widget._auth.currentUser;
     if (user != null) {
-      final userDocRef = _firestore.collection('Users').doc(user.uid);
+      final userDocRef = widget._firestore.collection('Users').doc(user.uid);
       await userDocRef.update({'username': newUsername});
     }
   }
 
-  // Function to edit email (requires re-authentication)
-  Future<void> editEmail(String newEmail) async {
-    final user = _auth.currentUser;
-    if (user != null) {
-      // Get user credentials for re-authentication (replace with your logic)
-// Implement this method
-
-      // Re-authenticate the user
-
-      // Update email after successful re-authentication
-      await user.updateEmail(newEmail);
-    }
-  }
-
-  Future<AuthCredential> getAuthCredential() async {
-    // Prompt user for current password or other verification method
-    // ...
-    throw Exception(
-        'Not implemented: getAuthCredential'); // Replace with implementation
-  }
-
   @override
   Widget build(BuildContext context) {
+    final languageProvider = Provider.of<LanguageProvider>(context);
+    final String? languageId = languageProvider.selectedLanguage;
+    final String? intendedLanguageId = languageProvider.intendedSelectedLanguage;
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Account Settings'),
-        automaticallyImplyLeading: false, // Remove back button
+        title: const Text('Advanced Settings'),
+        automaticallyImplyLeading: false,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            // Get the current user document ID
-            StreamBuilder<User?>(
-              stream: _auth.authStateChanges(),
-              builder: (context, snapshot) {
-                if (snapshot.hasError) {
-                  return Text('Error: ${snapshot.error}');
-                }
+        child: FutureBuilder<List<QuerySnapshot>>(
+          future: Future.wait([
+            FirebaseFirestore.instance
+              .collection('intended_languages')
+              .where('language', isEqualTo: intendedLanguageId)
+              .get(),
+            FirebaseFirestore.instance
+              .collection('languages')
+              .where('language', isEqualTo: languageId)
+              .get(),
+          ]),
+          builder: (context, AsyncSnapshot<List<QuerySnapshot>> snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            } else if (snapshot.hasError) {
+              return Center(child: Text('Error: ${snapshot.error}'));
+            } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+              return const Center(child: Text('No data found'));
+            } else {
+              final intendedLanguageData = snapshot.data![1].docs;
 
-                if (!snapshot.hasData) {
-                  return const Center(child: CircularProgressIndicator());
-                }
+              final String intendedLanguageImage = intendedLanguageData.isNotEmpty
+                  ? (intendedLanguageData.first.data() as Map<String, dynamic>)['image'] ?? 'No image'
+                  : 'No data';
 
-                final user = snapshot.data!;
-                final userId = user.uid;
+              return Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    StreamBuilder<User?>(
+                      stream: widget._auth.authStateChanges(),
+                      builder: (context, snapshot) {
+                        if (snapshot.hasError) {
+                          return Text('Error: ${snapshot.error}');
+                        }
 
-                // Use userId to construct the document reference (replace with your logic)
-                final userDocRef = _firestore.collection('Users').doc(userId);
+                        if (!snapshot.hasData) {
+                          return const Center(child: CircularProgressIndicator());
+                        }
 
-                return StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-                  stream: userDocRef.snapshots(),
-                  builder: (context, snapshot) {
-                    if (snapshot.hasError) {
-                      return Text('Error: ${snapshot.error}');
-                    }
+                        final user = snapshot.data!;
+                        final userId = user.uid;
+                        final userDocRef = widget._firestore.collection('Users').doc(userId);
 
-                    if (!snapshot.hasData) {
-                      return const Center(child: CircularProgressIndicator());
-                    }
+                        return StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+                          stream: userDocRef.snapshots(),
+                          builder: (context, snapshot) {
+                            if (snapshot.hasError) {
+                              return Text('Error: ${snapshot.error}');
+                            }
 
-                    final userData = snapshot.data!.data();
-                    final username = userData?['username'] ?? 'N/A';
-                    final userEmail = userData?['email'] ?? 'N/A';
-                    final languageCombination = userData?['language'] ?? 'N/A';
+                            if (!snapshot.hasData) {
+                              return const Center(child: CircularProgressIndicator());
+                            }
 
-                    List<String> extractedLanguages =
-                        extractLanguages(languageCombination);
-                    String userLanguage = extractedLanguages[0];
-                    String learnedLanguage = extractedLanguages[1];
+                            final userData = snapshot.data!.data();
+                            final username = userData?['username'] ?? 'N/A';
+                            final userEmail = userData?['email'] ?? 'N/A';
 
-                    print(languageCombination);
-                    return Column(
-                      children: [
-                        // Username Row
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const Text(
-                              'Username:',
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                            Text(username),
-                            // Non-functional edit button (for testing)
-                            ElevatedButton(
-                              onPressed: () => showUsernameDialog(
-                                  context, username), // Does nothing on press
-                              child: const Text('Edit'),
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor:
-                                    Colors.grey[200], // Light gray button
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(
-                            height: 16.0), // Add spacing between rows
-                        // Email Row
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const Text(
-                              'Email:',
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                            Text(userEmail),
-                            // Non-functional edit button (for testing)
-                            ElevatedButton(
-                              onPressed: () => null, // Does nothing on press
-                              child: const Text('Edit'),
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor:
-                                    Colors.grey[200], // Light gray button
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 16.0),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const Text(
-                              'User Language:',
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                            Text(userLanguage),
-                            // Add edit button functionality here (optional)
-                            ElevatedButton(
-                              onPressed: () {},
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor:
-                                    Colors.grey[200], // Light gray button
-                              ), // Replace with actual edit logic
-                              child: const Text('Edit'),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 16.0),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const Text(
-                              'Learned Language:',
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                            Text(learnedLanguage),
-                            // Add edit button functionality here (optional)
-                            ElevatedButton(
-                              onPressed: () => null,
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor:
-                                    Colors.grey[200], // Light gray button
-                              ), // Replace with actual edit logic
-                              child: const Text('Edit'),
-                            ),
-                          ],
-                        ),
-                      ],
-                    );
-                  },
-                );
-              },
-            ),
-            const SizedBox(height: 16.0), // Add spacing
-
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                // Delete Account Button (WARNING:
-                TextButton(
-                  onPressed: () {
-                    // Implement confirmation logic and handle deletion (replace with actual logic)
-                    // This is where you would display a custom confirmation dialog or prompt
-                  },
-                  child: const Text(
-                    'Delete Account',
-                    style: TextStyle(color: Colors.red),
-                  ),
+                            return Column(
+                              children: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      'User Language',
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                        color: Theme.of(context).colorScheme.inversePrimary,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 150),
+                                    GestureDetector(
+                                      onTap: () {
+                                        _showLanguageDialog(context);
+                                      },
+                                      child: Image.asset(
+                                        intendedLanguageImage,
+                                        width: 50,
+                                        height: 50,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 16.0),
+                                // Username Row
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    RichText(
+                                      text: TextSpan(
+                                        children: [
+                                          TextSpan(
+                                            text: 'Username:   ',
+                                            style: TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold,
+                                              color: Theme.of(context).colorScheme.inversePrimary, // Color for 'Username:'
+                                            ),
+                                          ),
+                                          TextSpan(
+                                            text: username,
+                                            style: TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold,
+                                              color: Theme.of(context).colorScheme.primary, // Color for $username
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    TextButton(
+                                      onPressed: () => showUsernameDialog(context, username),
+                                      child: const Icon(Icons.edit, color: Colors.grey),
+                                    )
+                                  ],
+                                ),
+                                const SizedBox(height: 16.0),
+                                // Email Row
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    const Text(
+                                      'Email:',
+                                      style: TextStyle(fontWeight: FontWeight.bold),
+                                    ),
+                                    Text(userEmail),
+                                  ],
+                                ),
+                                const SizedBox(height: 50),
+                                MyButton(
+                                  text: 'Go Back',
+                                  onTap: () {Navigator.pop(context);},
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      },
+                    ),
+                  ],
                 ),
-                // Change Password Button
-                TextButton(
-                  onPressed: () {
-                    // Navigate to change password screen (replace with actual navigation)
-                    Navigator.pushNamed(context,
-                        '/change-password'); // Replace with your route name
-                  },
-                  child: const Text('Change Password'),
-                ),
-              ],
-            ),
-          ],
+              );
+            }
+          },
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // Navigate back to home screen
-          Navigator.pop(context);
-        },
-        child: const Icon(Icons.arrow_back),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
+    );
+  }
+
+  Future<void> _showLanguageDialog(BuildContext context) async {
+    QuerySnapshot<Map<String, dynamic>> languagesSnapshot =
+        await widget._firestore.collection('languages').get();
+
+    List<String> languageNames = languagesSnapshot.docs
+        .map((doc) => doc.data()['name'] as String)
+        .toList();
+
+    List<String> languageIds = languagesSnapshot.docs
+        .map((doc) => doc.data()['language'] as String)
+        .toList();
+
+    List<String> languageImages = languagesSnapshot.docs
+        .map((doc) => doc.data()['image'] as String)
+        .toList();
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      builder: (BuildContext context) {
+        return Container(
+          height: MediaQuery.of(context).size.height * 0.5,
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text(
+                'Change your language',
+                style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 10.0),
+              Expanded(
+                child: PageView.builder(
+                  itemCount: languageNames.length,
+                  itemBuilder: (context, index) {
+                    return GestureDetector(
+                      onTap: () {
+                        Provider.of<LanguageProvider>(context, listen: false)
+                            .setSelectedLanguage(languageIds[index]);
+                        Navigator.of(context).pop();
+                      },
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Image.asset(
+                            languageImages[index],
+                            width: 100,
+                            height: 100,
+                            fit: BoxFit.contain,
+                          ),
+                          const SizedBox(height: 10),
+                          Text(languageNames[index]),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }

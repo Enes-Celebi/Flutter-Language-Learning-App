@@ -42,16 +42,23 @@ class MyMainCard extends StatelessWidget {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                const SizedBox(height: 35),//value
-                Image.asset(
+                const SizedBox(height: 35), //value
+                Image.network(
                   imagePath,
-                  width: 150,//value
-                  height: 150,//value
+                  width: 150, //value
+                  height: 150, //value
+                  errorBuilder: (context, error, stackTrace) {
+                    return Image.asset(
+                      'lib/assets/images/test/pic1.png',
+                      width: 150, //value
+                      height: 150, //value
+                    );
+                  },
                 ),
-                const SizedBox(height: 35),//value
+                const SizedBox(height: 35), //value
                 SizedBox(
-                  height: 20,//value
-                  width: 200,//value
+                  height: 20, //value
+                  width: 200, //value
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(15),
                     child: LinearProgressIndicator(
@@ -60,7 +67,7 @@ class MyMainCard extends StatelessWidget {
                       backgroundColor: Colors.grey[300],
                     ),
                   ),
-                )
+                ),
               ],
             ),
           ),

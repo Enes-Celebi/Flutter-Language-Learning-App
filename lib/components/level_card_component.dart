@@ -49,10 +49,17 @@ class SubjectLevelCard extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 10),
-                    Image.asset(
+                    Image.network(
                       imagePath,
-                      width: 80,
-                      height: 80,
+                      width: 60,
+                      height: 60,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Image.asset(
+                          'lib/assets/images/test/pic1.png',
+                          width: 60,
+                          height: 60,
+                        );
+                      },
                     ),
                     const SizedBox(height: 10),
                     Padding(

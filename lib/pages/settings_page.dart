@@ -4,28 +4,51 @@ import 'package:lingoneer_beta_0_0_1/components/appbar_component.dart';
 import 'package:lingoneer_beta_0_0_1/components/primary_button_component.dart';
 import 'package:lingoneer_beta_0_0_1/pages/account_settings.dart';
 import 'package:lingoneer_beta_0_0_1/services/language_provider.dart';
+import 'package:lingoneer_beta_0_0_1/themes/theme_provider.dart';
 import 'package:provider/provider.dart';
 
 class SettingsPage extends StatefulWidget {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  SettingsPage({super.key});
+  SettingsPage({Key? key});
 
   @override
   State<SettingsPage> createState() => _SettingsPageState();
 }
 
-class _SettingsPageState extends State<SettingsPage> {
-  bool isDarkMode = false;
+class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMixin{
+  late AnimationController _animationController;
+  late Animation<double> _animation;
+  
+  @override
+  void initState() {
+    super.initState();
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 1),
+    );
+  }
+
+  @override 
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _animationController.forward(from: 0.0);
+  }
+  
+  @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
     final languageProvider = Provider.of<LanguageProvider>(context);
     final String? languageId = languageProvider.selectedLanguage;
     final String? intendedLanguageId = languageProvider.intendedSelectedLanguage;
 
     return Scaffold(
-      appBar: const CustomAppBar(),
       body: FutureBuilder<List<QuerySnapshot>>(
         future: Future.wait([
           FirebaseFirestore.instance
@@ -68,11 +91,9 @@ class _SettingsPageState extends State<SettingsPage> {
                       ),
                       const SizedBox(width: 20),
                       Switch(
-                        value: isDarkMode,
+                        value: themeProvider.isDarkMode,
                         onChanged: (value) {
-                          setState(() {
-                            isDarkMode = value;
-                          });
+                          themeProvider.toggleTheme();
                         },
                         activeColor: Colors.blue,
                       )
@@ -118,12 +139,12 @@ class _SettingsPageState extends State<SettingsPage> {
                     children: [
                       MyButton(
                         text: 'Go Back',
-                        onTap: () => Navigator.pop(context),
+                        onTap: () {Navigator.pop(context);},
                       ),
                       MyButton(
                         text: 'Advanced',
-                        onTap: () => Navigator.push(
-                          context,
+                        onTap: () => Navigator.pushReplacement(
+                          context, // Use pushReplacement instead of push
                           MaterialPageRoute(
                             builder: (context) => GeneralSettingsPage(),
                           ),
@@ -205,3 +226,4 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 }
+
