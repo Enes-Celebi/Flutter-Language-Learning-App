@@ -17,6 +17,7 @@ class _IntendedLanguageSelectionState extends State<IntendedLanguageSelection> {
   final ScrollController _scrollController = ScrollController();
   List<DocumentSnapshot> _languages = [];
   String? _selectedUserLanguage; // User language from LanguageProvider
+  String? _titleText; // Title text from intended_languages collection
 
   @override
   void initState() {
@@ -27,15 +28,31 @@ class _IntendedLanguageSelectionState extends State<IntendedLanguageSelection> {
       setState(() {
         _selectedUserLanguage = languageProvider.selectedLanguage;
       });
+      fetchTitleText();
       fetchIntendedLanguages();
     });
+  }
+
+  Future<void> fetchTitleText() async {
+    try {
+      QuerySnapshot snapshot = await FirebaseFirestore.instance.collection('intended_languages').get();
+      final userLanguageDoc = snapshot.docs.firstWhere((doc) => doc.get('language') == _selectedUserLanguage);
+      setState(() {
+        _titleText = userLanguageDoc.get('text');
+      });
+    } catch (e) {
+      print('Error fetching title text: $e');
+    }
   }
 
   Future<void> fetchIntendedLanguages() async {
     try {
       QuerySnapshot snapshot = await FirebaseFirestore.instance.collection('intended_languages').get();
+      final userLanguageDoc = snapshot.docs.firstWhere((doc) => doc.get('language') == _selectedUserLanguage);
+      final availability = List<String>.from(userLanguageDoc.get('availability'));
+
       setState(() {
-        _languages = snapshot.docs.where((doc) => doc.get('language') != _selectedUserLanguage).toList();
+        _languages = snapshot.docs.where((doc) => availability.contains(doc.get('language'))).toList();
       });
     } catch (e) {
       print('Error fetching intended languages: $e');
@@ -62,6 +79,8 @@ class _IntendedLanguageSelectionState extends State<IntendedLanguageSelection> {
       setState(() {
         _selectedUserLanguage = newLanguage;
       });
+      fetchTitleText();
+      fetchIntendedLanguages();
     }
   }
 
@@ -79,8 +98,7 @@ class _IntendedLanguageSelectionState extends State<IntendedLanguageSelection> {
             return const Center(child: CircularProgressIndicator());
           }
 
-          _languages = snapshot.data!.docs.where((doc) => doc.get('language') != _selectedUserLanguage).toList();
-
+          // Languages are filtered within fetchIntendedLanguages
           return Stack(
             children: [
               _buildTitle(),
@@ -103,15 +121,15 @@ class _IntendedLanguageSelectionState extends State<IntendedLanguageSelection> {
   }
 
   Widget _buildTitle() {
-    return const Positioned(
+    return Positioned(
       top: 100,
       left: 0,
       right: 0,
       child: Align(
         alignment: Alignment.topCenter,
         child: Text(
-          'Choose the language you want to learn',
-          style: TextStyle(
+          _titleText ?? 'Loading...',
+          style: const TextStyle(
             fontSize: 28,
             fontWeight: FontWeight.bold,
           ),
@@ -156,12 +174,12 @@ class _IntendedLanguageSelectionState extends State<IntendedLanguageSelection> {
                           fit: BoxFit.contain,
                         ),
                       ),
-                      const SizedBox(width: 20),
+                      const SizedBox(width: 50),
                       Text(
                         languageName,
                         style: const TextStyle(
                           fontSize: 18,
-                          fontWeight: FontWeight.bold,
+                          //fontWeight: FontWeight.bold,
                         ),
                       ),
                     ],
