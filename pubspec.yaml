@@ -39,6 +39,7 @@ dependencies:
   cloud_firestore: ^4.0.5
   path: ^1.9.0
   shared_preferences: ^2.0.9
+  lottie: ^2.0.0
 
 dev_dependencies:
   flutter_test:
@@ -80,6 +81,7 @@ flutter:
     - lib/assets/images/flags/egypt.png
     - lib/assets/images/flags/spain.png
     - lib/assets/images/icons/appnamelogo.png
+    - lib/assets/images/animations/flame1.json
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

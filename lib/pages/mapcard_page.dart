@@ -50,7 +50,7 @@ class _progressMapPageState extends State<progressMapPage> {
     Color cardBorder = widget.levelCardColor.withOpacity(0.1);
 
     return Scaffold(
-      appBar: const CustomAppBar(),
+      //appBar: const CustomBar(),
       body: FutureBuilder<List<QuerySnapshot>>(
         future: Future.wait([
           FirebaseFirestore.instance

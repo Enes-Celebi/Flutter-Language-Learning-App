@@ -1,236 +1,310 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
-import 'package:lingoneer_beta_0_0_1/services/languages_map.dart';
+import "dart:ui";
 
-class GeneralSettingsPage extends StatelessWidget {
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  final FirebaseAuth _auth = FirebaseAuth.instance;
+import "package:cloud_firestore/cloud_firestore.dart";
+import "package:firebase_auth/firebase_auth.dart";
+import "package:flutter/material.dart";
+import "package:lingoneer_beta_0_0_1/components/appbar_component.dart";
+import "package:lingoneer_beta_0_0_1/components/subject_card_component.dart";
+import "package:lingoneer_beta_0_0_1/pages/level_page.dart";
+import "package:lingoneer_beta_0_0_1/services/language_provider.dart";
+import "package:lingoneer_beta_0_0_1/themes/subject_colors.dart";
+import "package:lottie/lottie.dart";
+import "package:provider/provider.dart";
 
-  void showUsernameDialog(BuildContext context, String currentUsername) {
-    final TextEditingController usernameController = TextEditingController(text: currentUsername);
+class HomePage extends StatefulWidget {
+  final String? selectedLanguageComb;
 
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text('Edit Username'),
-          content: TextField(
-            controller: usernameController,
-            autofocus: true, // Automatically focus the text field
-            decoration: const InputDecoration(
-              hintText: 'Enter new username',
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('Cancel'),
-            ),
-            TextButton(
-              onPressed: () {
-                final newUsername = usernameController.text.trim();
-                if (newUsername.isNotEmpty) {
-                  editUsername(newUsername);
-                  Navigator.pop(context); // Close the dialog
-                } else {
-                  // Show error message if username is empty
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Please enter a username'),
-                    ),
-                  );
-                }
-              },
-              child: const Text('Save'),
-            ),
-          ],
-        );
-      },
+  const HomePage({
+    super.key,
+    required this.selectedLanguageComb,
+  });
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> with WidgetsBindingObserver{
+  late FirebaseAuth _auth;
+  late User? _user;
+  String? _intendedLanguageImage;
+  bool _isArrowDown = true;  
+
+  // initializatoin
+  @override
+  void initState() {
+    super.initState();
+    _auth = FirebaseAuth.instance;
+    _user = _auth.currentUser;
+    _checkUsername(_user!);
+
+    WidgetsBinding.instance?.addObserver(this);
+
+    // Fetch the intended language image URL
+    _fetchIntendedLanguageImage();
+  }
+
+  // username checking function
+  void _checkUsername(User user) async {
+    if (user != null) {
+      final userData = await FirebaseFirestore.instance
+          .collection('Users')
+          .where('email', isEqualTo: user.email)
+          .get();
+
+      if (userData.docs.isNotEmpty) {
+        final userDoc = userData.docs.first;
+        final userDataMap = userDoc.data() as Map<String, dynamic>;
+
+        if (!userDataMap.containsKey('username') ||
+            userDataMap['username'] == null ||
+            userDataMap['username'].isEmpty) {
+          await showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              String newUsername = '';
+              return AlertDialog(
+                title: const Text('Set Username'),
+                content: TextField(
+                  onChanged: (value) => newUsername = value,
+                  decoration: const InputDecoration(hintText: 'Enter Username'),
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: const Text('Cancel'),
+                  ),
+                  TextButton(
+                    onPressed: () async {
+                      if (newUsername.isNotEmpty) {
+                        await FirebaseFirestore.instance
+                            .collection('Users')
+                            .doc(user.uid)
+                            .set({'username': newUsername}, SetOptions(merge: true));
+                        Navigator.pop(context);
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Please enter a valid username.'),
+                          ),
+                        );
+                      }
+                    },
+                    child: const Text('Save'),
+                  ),
+                ],
+              );
+            }
+          );
+        }
+      }
+    }
+  }
+
+  // function to go to the level page when a subject is pressed
+  void _goToSubjectLevel(String subjectId) async {
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (content) => subjectLevelPage(
+          selectedCardIndex: subjectId,
+          subjectCardColor: getSubjectColor(subjectId),
+        ),
+      ),
     );
   }
 
-  Future<void> editUsername(String newUsername) async {
-    final user = _auth.currentUser;
-    if (user != null) {
-      final userDocRef = _firestore.collection('Users').doc(user.uid);
-      await userDocRef.update({'username': newUsername});
+  // function to toggle arrow button
+  void _toggleArrow() {
+    setState(() {
+      _isArrowDown = !_isArrowDown;
+    });
+  }
+
+  // dispose
+  @override
+  void dispose() {
+    WidgetsBinding.instance?.removeObserver(this);
+    super.dispose();
+  }
+
+  // handling of subject colors
+  Color getSubjectColor(String subjectId) {
+    final Map<String, Color> colorMap = {
+      'mat': SubjectColors.mat,
+      'dif': SubjectColors.dif,
+      'phy': SubjectColors.phy
+    };
+    final String prefix = subjectId.substring(0, 3).toLowerCase();
+    return colorMap[prefix] ?? Colors.grey;
+  }
+
+  // function to get the intended language image
+  Future<void> _fetchIntendedLanguageImage() async {
+    final intendedLanguageId = Provider.of<LanguageProvider>(context, listen: false).intendedSelectedLanguage;
+    try {
+      QuerySnapshot snapshot = await FirebaseFirestore.instance
+          .collection('intended_languages')
+          .where('language', isEqualTo: intendedLanguageId)
+          .get();
+      final intendedLanguageData = snapshot.docs;
+      if (intendedLanguageData.isNotEmpty) {
+        setState(() {
+          _intendedLanguageImage = (intendedLanguageData.first.data() as Map<String, dynamic>)['image'] ?? 'No image';
+        });
+      }
+    } catch (e) {
+      print('Error fetching intended language image: $e');
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final selectedLanguageCombination = Provider.of<LanguageProvider>(context).languageComb;
+    final languageProvider = Provider.of<LanguageProvider>(context);
+    final String? intendedLanguageId = languageProvider.intendedSelectedLanguage;
+
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Account Settings'),
-        automaticallyImplyLeading: false, // Remove back button
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            // Get the current user document ID
-            StreamBuilder<User?>(
-              stream: _auth.authStateChanges(),
-              builder: (context, snapshot) {
-                if (snapshot.hasError) {
-                  return Text('Error: ${snapshot.error}');
-                }
+      appBar: AppBar(),
+      body: Stack(
+        children: [
+          Column(
+            children: [
+              SizedBox(height: 110,),
+              Expanded(
+                child: Stack(
+                  children: [
+                    FutureBuilder<List<QuerySnapshot>>(
+                      future: Future.wait([
+                        FirebaseFirestore.instance
+                            .collection('subjects')
+                            .where('language', isEqualTo: selectedLanguageCombination)
+                            .get(),
+                        FirebaseFirestore.instance
+                            .collection('Users')
+                            .where('email', isEqualTo: _user!.email)
+                            .get(),
+                        FirebaseFirestore.instance
+                            .collection('intended_languages')
+                            .where('language', isEqualTo: intendedLanguageId)
+                            .get(),
+                      ]), 
+                      builder: (context, snapshot) {
+                        if (snapshot.hasError) {
+                          return Center(child: Text('Error: ${snapshot.error}'));
+                        }
 
-                if (!snapshot.hasData) {
-                  return const Center(child: CircularProgressIndicator());
-                }
+                        if (!snapshot.hasData) {
+                          return const Center(child: CircularProgressIndicator());
+                        }
 
-                final user = snapshot.data!;
-                final userId = user.uid;
+                        final subjectsSnapshot = snapshot.data![0].docs;
+                        final userData = snapshot.data![1];
+                        final progressSnapshot = snapshot.data![2];
 
-                // Use userId to construct the document reference (replace with your logic)
-                final userDocRef = _firestore.collection('Users').doc(userId);
+                        final DocumentSnapshot userDoc = userData.docs.first;
+                        final userDataMap = userDoc.data() as Map<String, dynamic>;
+                        if (!userDataMap.containsKey('language')) {
+                          return const Center(child: Text('Language not found'));
+                        }
 
-                return StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-                  stream: userDocRef.snapshots(),
-                  builder: (context, snapshot) {
-                    if (snapshot.hasError) {
-                      return Text('Error: ${snapshot.error}');
-                    }
+                        final doneMapcardIds = progressSnapshot.docs
+                            .map((doc) => doc['lessonId'].toString().substring(0, ['lessonId'].toString().length - 7))
+                            .toList();
 
-                    if (!snapshot.hasData) {
-                      return const Center(child: CircularProgressIndicator());
-                    }
+                        return PageView(
+                          children: subjectsSnapshot.map((subject) {
+                            final title = subject.get('name');
+                            final imageURL = subject.get('image');
+                            final subjectId = subject.get('id');
 
-                    final userData = snapshot.data!.data();
-                    final username = userData?['username'] ?? 'N/A';
-                    final userEmail = userData?['email'] ?? 'N/A';
-                    final languageCombination = userData?['language'] ?? 'N/A';
+                            final countOfSpecificSubject = 
+                                doneMapcardIds.where((subject) => subject == subjectId).length;
 
-                    List<String> extractedLanguages =
-                        extractLanguages(languageCombination);
-                    String userLanguage = extractedLanguages[0];
-                    String learnedLanguage = extractedLanguages[1];
+                            final cardColor = getSubjectColor(subjectId);
+                            final progressValue = countOfSpecificSubject / 32;
 
-                    print(languageCombination);
-                    return Column(
-                      children: [
-                        // Username Row
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const Text(
-                              'Username:',
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                            Text(username),
-                            // Non-functional edit button (for testing)
-                            ElevatedButton(
-                              onPressed: () => showUsernameDialog(
-                                  context, username), // Does nothing on press
-                              child: const Text('Edit'),
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor:
-                                    Colors.grey[200], // Light gray button
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(
-                            height: 16.0), // Add spacing between rows
-                        // Email Row
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const Text(
-                              'Email:',
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                            Text(userEmail),
-                            // Non-functional edit button (for testing)
-                            
-                          ],
-                        ),
-                        const SizedBox(height: 16.0),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const Text(
-                              'User Language:',
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                            Text(userLanguage),
-                            // Add edit button functionality here (optional)
-                            ElevatedButton(
-                              onPressed: () {},
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor:
-                                    Colors.grey[200], // Light gray button
-                              ), // Replace with actual edit logic
-                              child: const Text('Edit'),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 16.0),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const Text(
-                              'Learned Language:',
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                            Text(learnedLanguage),
-                            // Add edit button functionality here (optional)
-                            ElevatedButton(
-                              onPressed: () => null,
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor:
-                                    Colors.grey[200], // Light gray button
-                              ), // Replace with actual edit logic
-                              child: const Text('Edit'),
-                            ),
-                          ],
-                        ),
-                      ],
-                    );
-                  },
-                );
-              },
-            ),
-            const SizedBox(height: 16.0), // Add spacing
-
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                // Delete Account Button (WARNING:
-                TextButton(
-                  onPressed: () {
-                    // Implement confirmation logic and handle deletion (replace with actual logic)
-                    // This is where you would display a custom confirmation dialog or prompt
-                  },
-                  child: const Text(
-                    'Delete Account',
-                    style: TextStyle(color: Colors.red),
-                  ),
+                            return MyMainCard(
+                              title: title ?? 'No Title', 
+                              imagePath: imageURL ?? 'lib/assets/images/test/pic1.png', 
+                              progressValue: progressValue, 
+                              cardColor: cardColor, 
+                              progressColor: cardColor.withOpacity(0.7), 
+                              onTap: () => _goToSubjectLevel(subjectId)
+                            );
+                          }).toList(),
+                        );
+                      }
+                    )
+                  ],
                 ),
-                // Change Password Button
-                TextButton(
-                  onPressed: () {
-                    // Navigate to change password screen (replace with actual navigation)
-                    Navigator.pushNamed(context,
-                        '/change-password'); // Replace with your route name
-                  },
-                  child: const Text('Change Password'),
-                ),
-              ],
-            ),
-          ],
-        ),
+              )
+            ],
+          ),
+          _applyBlur(),
+        ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // Navigate back to home screen
-          Navigator.pop(context);
-        },
-        child: const Icon(Icons.arrow_back),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
+      bottomNavigationBar: BottomAppBar(),
     );
   }
+
+  AppBar() {
+    CustomBar(
+      height: 110,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          //if (_intendedLanguageImage != null)
+          Padding(
+            padding: const EdgeInsets.only(left: 20.0, bottom: 10.0),
+            child: Image.asset(
+              _intendedLanguageImage!,
+              width: 70,
+              height: 70,
+              fit: BoxFit.cover,
+            ),
+          ),
+          GestureDetector(
+            onTap: _toggleArrow,
+            child: Icon(
+              _isArrowDown ? Icons.arrow_drop_down : Icons.arrow_drop_up,
+              size: 40,
+              color: Theme.of(context).iconTheme.color,
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(right: 20.0, top: 10.0),
+            child: SizedBox(
+              width: 70,
+              height: 70,
+              child: Lottie.asset(
+                'lib/assets/images/animations/flame1.json',
+                fit: BoxFit.contain,
+              ),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  BottomAppBar() {
+    const CustomBar(
+      isBottomBar: true,
+      height: 80,
+    );
+  }
+
+  Widget _applyBlur() {
+    if (!_isArrowDown) {
+      return Positioned.fill(
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+          child: Container(
+            color: Colors.transparent,
+          ),
+        ),
+      );
+    }
+    return SizedBox.shrink();
+  } 
 }

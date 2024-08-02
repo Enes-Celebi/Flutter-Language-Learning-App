@@ -58,7 +58,7 @@ class _subjectLevelPageState extends State<subjectLevelPage> with SingleTickerPr
     User? user = _auth.currentUser;
 
     return Scaffold(
-      appBar: const CustomAppBar(),
+      //appBar: const CustomBar(),
       body: FutureBuilder<List<QuerySnapshot>>(
         future: Future.wait([
           FirebaseFirestore.instance
