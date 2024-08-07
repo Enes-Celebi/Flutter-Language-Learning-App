@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:lingoneer_beta_0_0_1/firebase_options.dart';
+import 'package:lingoneer_beta_0_0_1/services/firebase_options.dart';
 import 'package:lingoneer_beta_0_0_1/pages/splash_screen.dart';
 import 'package:lingoneer_beta_0_0_1/services/language_provider.dart';
 import 'package:lingoneer_beta_0_0_1/themes/theme_provider.dart';

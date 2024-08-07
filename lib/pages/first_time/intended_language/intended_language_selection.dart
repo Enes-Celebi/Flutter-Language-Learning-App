@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:lingoneer_beta_0_0_1/pages/login_page.dart';
+import 'package:lingoneer_beta_0_0_1/pages/login_signup/login_page.dart';
 import 'package:lingoneer_beta_0_0_1/services/language_provider.dart';
 import 'package:provider/provider.dart';
 

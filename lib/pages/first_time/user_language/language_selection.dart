@@ -2,7 +2,7 @@ import "dart:async";
 import "package:cloud_firestore/cloud_firestore.dart";
 import "package:flutter/material.dart";
 import "package:lingoneer_beta_0_0_1/components/primary_searchbar_component.dart";
-import "package:lingoneer_beta_0_0_1/pages/first_time/intended_language_selection.dart";
+import "package:lingoneer_beta_0_0_1/pages/first_time/intended_language/intended_language_selection.dart";
 import "package:lingoneer_beta_0_0_1/services/language_provider.dart";
 import "package:provider/provider.dart";
 

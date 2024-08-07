@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:lingoneer_beta_0_0_1/components/test_component.dart';
-import 'package:lingoneer_beta_0_0_1/pages/test_completion_page.dart';
+import 'package:lingoneer_beta_0_0_1/pages/test/test_component.dart';
+import 'package:lingoneer_beta_0_0_1/pages/test/test_completion_page.dart';
 
 class TestPage extends StatefulWidget {
   final String selectedCardIndex;

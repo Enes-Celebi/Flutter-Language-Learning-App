@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:lingoneer_beta_0_0_1/components/appbar_component.dart';
 import 'package:lingoneer_beta_0_0_1/components/primary_button_component.dart';
-import 'package:lingoneer_beta_0_0_1/pages/account_settings.dart';
+import 'package:lingoneer_beta_0_0_1/pages/settings/account_settings.dart';
 import 'package:lingoneer_beta_0_0_1/services/language_provider.dart';
 import 'package:lingoneer_beta_0_0_1/themes/theme_provider.dart';
 import 'package:provider/provider.dart';

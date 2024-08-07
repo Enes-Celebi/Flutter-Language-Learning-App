@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:lingoneer_beta_0_0_1/pages/first_time/language_selection.dart';
+import 'package:lingoneer_beta_0_0_1/pages/first_time/user_language/language_selection.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});

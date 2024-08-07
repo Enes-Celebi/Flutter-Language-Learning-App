@@ -2,9 +2,9 @@ import "package:cloud_firestore/cloud_firestore.dart";
 import "package:firebase_auth/firebase_auth.dart";
 import "package:flutter/material.dart";
 import "package:lingoneer_beta_0_0_1/components/appbar_component.dart";
-import "package:lingoneer_beta_0_0_1/components/mapcard_component.dart";
-import "package:lingoneer_beta_0_0_1/pages/lesson_page.dart";
-import "package:lingoneer_beta_0_0_1/pages/test_page.dart";
+import "package:lingoneer_beta_0_0_1/pages/mapcard/mapcard_component.dart";
+import "package:lingoneer_beta_0_0_1/pages/test/lesson_page.dart";
+import "package:lingoneer_beta_0_0_1/pages/test/test_page.dart";
 
 class progressMapPage extends StatefulWidget {
   final String selectedCardIndex;

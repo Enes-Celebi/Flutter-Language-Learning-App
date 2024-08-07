@@ -1,45 +1,64 @@
+import "package:cloud_firestore/cloud_firestore.dart";
 import "package:firebase_auth/firebase_auth.dart";
 import "package:flutter/material.dart";
 import "package:lingoneer_beta_0_0_1/components/primary_button_component.dart";
 import "package:lingoneer_beta_0_0_1/components/primary_textfield_component.dart";
-import "package:lingoneer_beta_0_0_1/pages/subject_page.dart";
-import "package:lingoneer_beta_0_0_1/pages/signup_page.dart";
+import "package:lingoneer_beta_0_0_1/pages/home/layout.dart";
+import "package:lingoneer_beta_0_0_1/pages/login_signup/login_page.dart";
 import "package:lingoneer_beta_0_0_1/services/language_provider.dart";
 import "package:provider/provider.dart";
 
-class LoginPage extends StatefulWidget {
+class RegisterPage extends StatefulWidget {
   final void Function()? onTap;
 
-  const LoginPage({Key? key, required this.onTap}) : super(key: key);
+  const RegisterPage({Key? key, required this.onTap}) : super(key: key);
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<RegisterPage> createState() => _RegisterPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _RegisterPageState extends State<RegisterPage> {
   final _auth = FirebaseAuth.instance;
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  final TextEditingController confirmPasswordController =
+      TextEditingController();
 
-  void login() async {
+  void signup(BuildContext context) async {
     final languageProvider = Provider.of<LanguageProvider>(context, listen: false);
     final String? languageComb = languageProvider.languageComb;
 
-    try {
-      final cred = await _auth.signInWithEmailAndPassword(
-        email: emailController.text.trim(),
-        password: passwordController.text,
-      );
+    if (passwordController.text == confirmPasswordController.text) {
+      try {
+        final user = await _auth.createUserWithEmailAndPassword(
+          email: emailController.text.trim(),
+          password: passwordController.text,
+        );
 
-      if (cred.user != null) {
-        Navigator.pushReplacement(
+        await FirebaseFirestore.instance
+            .collection('Users')
+            .doc(user.user!.uid)
+            .set({
+          'userId': user.user!.uid,
+          'email': user.user!.email,
+          'language': languageComb,
+        });
+
+        Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => HomePage(selectedLanguageComb: languageComb)),
         );
+            } catch (e) {
+        String message = "Sign Up failed";
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(message),
+            backgroundColor: Theme.of(context).errorColor,
+          ),
+        );
       }
-    } on FirebaseAuthException catch (e) {
-      String message = e.code;
-
+    } else {
+      String message = "Password not matching";
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(message),
@@ -61,7 +80,7 @@ class _LoginPageState extends State<LoginPage> {
               Padding(
                 padding: const EdgeInsets.only(top: 160),
                 child: Text(
-                  "Login",
+                  "Register",
                   style: TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
@@ -69,29 +88,32 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
               ),
-              const SizedBox(height: 25),
+              const SizedBox(height: 15),
               MyTextField(
-                controller: emailController, 
-                hintText: "Email", 
-                obscureText: false
-              ),
-              const SizedBox(height: 25),
+                  controller: emailController,
+                  hintText: "Email",
+                  obscureText: false),
+              const SizedBox(height: 15),
               MyTextField(
-                controller: passwordController, 
-                hintText: "Password", 
-                obscureText: true
-              ),
-              const SizedBox(height: 25),
+                  controller: passwordController,
+                  hintText: "Password",
+                  obscureText: true),
+              const SizedBox(height: 15),
+              MyTextField(
+                  controller: confirmPasswordController,
+                  hintText: "Confirm password",
+                  obscureText: true),
+              const SizedBox(height: 15),
               MyButton(
-                text: "Sign in", 
-                onTap: login,
+                text: "Sign up",
+                onTap: () => signup(context),
               ),
-              const SizedBox(height: 25),
+              const SizedBox(height: 15),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    "Not a member??",
+                    "Already have an account?",
                     style: TextStyle(
                       color: Theme.of(context).colorScheme.inversePrimary,
                     ),
@@ -101,11 +123,15 @@ class _LoginPageState extends State<LoginPage> {
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => RegisterPage(onTap: () {  },)),
+                        MaterialPageRoute(
+                            builder: (context) => const LoginPage(
+                                  onTap: null,
+                                )
+                          )
                       );
                     },
                     child: Text(
-                      "Register now",
+                      "login now",
                       style: TextStyle(
                         color: Theme.of(context).colorScheme.inversePrimary,
                         fontWeight: FontWeight.bold,
@@ -123,8 +149,8 @@ class _LoginPageState extends State<LoginPage> {
               ),
               const SizedBox(height: 25),
               const MyButton(
-                text: "Google sign up", 
-                onTap: null
+                text: "Google sign up",
+                onTap: null,
               ),
             ],
           ),
