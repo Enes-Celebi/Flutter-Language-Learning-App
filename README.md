@@ -1,4 +1,4 @@
-# lingoneer_beta_0_0_1
+# lingoneer
 
 A new Flutter project.
 
