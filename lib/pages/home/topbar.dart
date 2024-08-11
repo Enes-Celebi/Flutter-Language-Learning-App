@@ -1,59 +1,139 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:lingoneer_beta_0_0_1/components/appbar_component.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 import 'package:lingoneer_beta_0_0_1/services/language_provider.dart';
+import 'package:lingoneer_beta_0_0_1/pages/home/data_fetch.dart';
 
-class TopBar extends StatelessWidget implements PreferredSizeWidget {
-  final String? intendedLanguageImage;
+class TopBar extends StatefulWidget implements PreferredSizeWidget {
   final bool isArrowDown;
   final VoidCallback onArrowToggle;
-  final List<DocumentSnapshot> availableLanguages;
-  final List<AnimationController> flagAnimationControllers;
-  final List<Animation<double>> flagSizeAnimations;
-  final Animation<double> textAppearanceAnimation;
+  final Function(String languageId) onLanguageSelected;
 
   const TopBar({
     super.key,
-    required this.intendedLanguageImage,
     required this.isArrowDown,
     required this.onArrowToggle,
-    required this.availableLanguages,
-    required this.flagAnimationControllers,
-    required this.flagSizeAnimations,
-    required this.textAppearanceAnimation,
+    required this.onLanguageSelected,
   });
 
   @override
+  _TopBarState createState() => _TopBarState();
+
+  @override
   Size get preferredSize => const Size.fromHeight(135.0);
+}
+
+class _TopBarState extends State<TopBar> {
+  String? _intendedLanguageImage;
+  List<DocumentSnapshot> _availableLanguages = [];
+  bool _isFlagsVisible = false;
+  OverlayEntry? _overlayEntry;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchIntendedLanguageImage();
+    _fetchAvailableLanguages();
+  }
+
+  @override
+  void didUpdateWidget(TopBar oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.isArrowDown != oldWidget.isArrowDown) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        setState(() {
+          _isFlagsVisible = !widget.isArrowDown;
+          if (_isFlagsVisible) {
+            _showOverlay();
+          } else {
+            _hideOverlay();
+          }
+        });
+      });
+    }
+  }
+
+  Future<void> _fetchIntendedLanguageImage() async {
+    final intendedLanguageId = Provider.of<LanguageProvider>(context, listen: false).intendedSelectedLanguage;
+    final image = await DataFetch.fetchIntendedLanguageImage(intendedLanguageId);
+    setState(() {
+      _intendedLanguageImage = image;
+    });
+  }
+
+  Future<void> _fetchAvailableLanguages() async {
+    final selectedLanguageId = Provider.of<LanguageProvider>(context, listen: false).selectedLanguage;
+    final intendedLanguageId = Provider.of<LanguageProvider>(context, listen: false).intendedSelectedLanguage;
+
+    try {
+      final filteredLanguages = await DataFetch.fetchAvailableLanguages(selectedLanguageId!, intendedLanguageId);
+      setState(() {
+        _availableLanguages = filteredLanguages;
+        if (_isFlagsVisible) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            _showOverlay();
+          });
+        }
+      });
+    } catch (e) {
+      print('Error fetching available languages: $e');
+    }
+  }
+
+  void _showOverlay() {
+    final overlay = Overlay.of(context);
+    _hideOverlay(); // Ensure previous overlay entry is removed before adding a new one
+
+    _overlayEntry = OverlayEntry(
+      builder: (context) => Positioned(
+        top: 135.0,
+        left: 20.0,
+        right: 20.0,
+        child: Material(
+          color: Colors.transparent,
+          child: _buildLanguageListView(context),
+        ),
+      ),
+    );
+    overlay.insert(_overlayEntry!);
+  }
+
+  void _hideOverlay() {
+    _overlayEntry?.remove();
+    _overlayEntry = null;
+  }
 
   @override
   Widget build(BuildContext context) {
     return Stack(
-      clipBehavior: Clip.none, // Allow content to overflow
+      clipBehavior: Clip.none,
       children: [
         CustomBar(
           height: 135,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              if (intendedLanguageImage != null)
+              if (_intendedLanguageImage != null)
                 Padding(
                   padding: const EdgeInsets.only(left: 20.0, top: 50.0),
                   child: Image.asset(
-                    intendedLanguageImage!,
+                    _intendedLanguageImage!,
                     width: 70,
                     height: 70,
                     fit: BoxFit.cover,
                   ),
                 ),
               GestureDetector(
-                onTap: onArrowToggle,
+                onTap: () {
+                  widget.onArrowToggle();
+                },
                 child: Padding(
                   padding: const EdgeInsets.only(left: 20.0, top: 50.0),
                   child: Icon(
-                    isArrowDown ? Icons.arrow_drop_down : Icons.arrow_drop_up,
+                    widget.isArrowDown ? Icons.arrow_drop_down : Icons.arrow_drop_up,
                     size: 40,
                     color: Theme.of(context).iconTheme.color,
                   ),
@@ -74,12 +154,6 @@ class TopBar extends StatelessWidget implements PreferredSizeWidget {
             ],
           ),
         ),
-        if (!isArrowDown)
-          Positioned(
-            top: 135.0, // Position below the top bar
-            left: 20.0,
-            child: _buildLanguageListView(context),
-          ),
       ],
     );
   }
@@ -87,7 +161,7 @@ class TopBar extends StatelessWidget implements PreferredSizeWidget {
   Widget _buildLanguageListView(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: availableLanguages.asMap().entries.map((entry) {
+      children: _availableLanguages.asMap().entries.map((entry) {
         final index = entry.key;
         final languageData = entry.value;
         final imageURL = languageData.get('image') ?? 'lib/assets/images/test/pic1.png';
@@ -95,44 +169,52 @@ class TopBar extends StatelessWidget implements PreferredSizeWidget {
         final languageId = languageData.get('language');
 
         return Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8.0),
-          child: GestureDetector(
-            onTap: () {
-              Provider.of<LanguageProvider>(context, listen: false).updateIntendedLanguage(languageId);
-              // Trigger these methods if needed from HomePage
-              // _fetchAvailableLanguages();
-              // _fetchIntendedLanguageImage();
-              onArrowToggle(); // Trigger arrow toggle to hide language list
-            },
-            child: Row(
-              children: [
-                AnimatedBuilder(
-                  animation: flagAnimationControllers[index],
-                  builder: (context, child) {
-                    return Transform.scale(
-                      scale: flagSizeAnimations[index].value,
-                      child: child,
-                    );
-                  },
-                  child: Container(
+          padding: const EdgeInsets.symmetric(vertical: 10.0),
+          child: Row(
+            children: [
+              GestureDetector(
+                onTap: () {
+                  Provider.of<LanguageProvider>(context, listen: false).updateIntendedLanguage(languageId);
+                  _fetchAvailableLanguages();
+                  _fetchIntendedLanguageImage();
+                  print('Clicked on language: $languageName');
+                },
+                child: Animate(
+                  effects: [
+                    if (widget.isArrowDown)
+                      const SlideEffect(
+                        begin: Offset(0, 0),
+                        end: Offset(-1.5, 0),
+                      )
+                    else
+                      const SlideEffect(
+                        begin: Offset(-1.5, 0),
+                        end: Offset(0, 0),
+                      ),
+                  ],
+                  delay: Duration(milliseconds: index * 200),
+                  child: Image.asset(
+                    imageURL,
                     width: 70,
                     height: 70,
-                    child: Image.asset(
-                      imageURL,
-                      fit: BoxFit.cover,
-                    ),
                   ),
                 ),
-                const SizedBox(width: 10),
-                FadeTransition(
-                  opacity: textAppearanceAnimation,
-                  child: Text(
-                    languageName,
-                    style: const TextStyle(fontSize: 18),
-                  ),
+              ),
+              const SizedBox(width: 15),
+              Animate(
+                effects: [
+                  if (widget.isArrowDown)
+                    FadeEffect(begin: 1, end: 0)
+                  else
+                    FadeEffect(begin: 0, end: 1),
+                ],
+                delay: Duration(milliseconds: 600),
+                child: Text(
+                  languageName,
+                  style: const TextStyle(fontSize: 16, color: Colors.black),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         );
       }).toList(),
