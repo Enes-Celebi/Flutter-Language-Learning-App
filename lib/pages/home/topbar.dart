@@ -11,12 +11,16 @@ class TopBar extends StatefulWidget implements PreferredSizeWidget {
   final bool isArrowDown;
   final VoidCallback onArrowToggle;
   final Function(String languageId) onLanguageSelected;
+  final Function(String imageURL, Offset flagPosition) onFlagClicked; // Updated callback
+  final String imagePath; // New parameter for the image path
 
   const TopBar({
     super.key,
     required this.isArrowDown,
     required this.onArrowToggle,
     required this.onLanguageSelected,
+    required this.onFlagClicked,
+    required this.imagePath, // Include imagePath in constructor
   });
 
   @override
@@ -31,7 +35,7 @@ class _TopBarState extends State<TopBar> {
   List<DocumentSnapshot> _availableLanguages = [];
   bool _isFlagsVisible = false;
   OverlayEntry? _overlayEntry;
-
+  
   @override
   void initState() {
     super.initState();
@@ -168,54 +172,77 @@ class _TopBarState extends State<TopBar> {
         final languageName = languageData.get('translation')?[Provider.of<LanguageProvider>(context).selectedLanguage] ?? 'Unknown';
         final languageId = languageData.get('language');
 
-        return Padding(
-          padding: const EdgeInsets.symmetric(vertical: 10.0),
-          child: Row(
-            children: [
-              GestureDetector(
-                onTap: () {
-                  Provider.of<LanguageProvider>(context, listen: false).updateIntendedLanguage(languageId);
-                  _fetchAvailableLanguages();
-                  _fetchIntendedLanguageImage();
-                  print('Clicked on language: $languageName');
-                },
-                child: Animate(
-                  effects: [
-                    if (widget.isArrowDown)
-                      const SlideEffect(
-                        begin: Offset(0, 0),
-                        end: Offset(-1.5, 0),
-                      )
-                    else
-                      const SlideEffect(
-                        begin: Offset(-1.5, 0),
-                        end: Offset(0, 0),
-                      ),
-                  ],
-                  delay: Duration(milliseconds: index * 200),
-                  child: Image.asset(
-                    imageURL,
-                    width: 70,
-                    height: 70,
+        return LayoutBuilder(
+          builder: (context, constraints) {
+            return GestureDetector(
+              onTap: () {
+                // Access the position of the specific flag widget
+                final RenderBox renderBox = context.findRenderObject() as RenderBox;
+                final Offset flagPosition = renderBox.localToGlobal(Offset.zero);
+
+                // Use the exact position for the currently displayed flag
+                widget.onFlagClicked(imageURL, flagPosition);
+                Provider.of<LanguageProvider>(context, listen: false).updateIntendedLanguage(languageId);
+
+                // Update the list to reflect the newly selected language
+                _fetchAvailableLanguages();
+                _fetchIntendedLanguageImage();
+
+                print('Clicked on language: $languageName at position: $flagPosition');
+                widget.onArrowToggle();
+              },
+              child: Row(
+                children: [
+                  Animate(
+                    effects: [
+                      if (widget.isArrowDown)
+                        SlideEffect(
+                          begin: const Offset(0, 0),
+                          end: const Offset(-1.5, 0),
+                          duration: const Duration(milliseconds: 300),
+                          delay: Duration(milliseconds: index * 100), // Stagger the slide effect
+                        )
+                      else
+                        SlideEffect(
+                          begin: const Offset(-1.5, 0),
+                          end: const Offset(0, 0),
+                          duration: const Duration(milliseconds: 300),
+                          delay: Duration(milliseconds: index * 100), // Stagger the slide effect
+                        ),
+                    ],
+                    child: Image.asset(
+                      imageURL,
+                      width: 50,
+                      height: 50,
+                    ),
                   ),
-                ),
-              ),
-              const SizedBox(width: 15),
-              Animate(
-                effects: [
-                  if (widget.isArrowDown)
-                    FadeEffect(begin: 1, end: 0)
-                  else
-                    FadeEffect(begin: 0, end: 1),
+                  const SizedBox(width: 15),
+                  Animate(
+                    effects: [
+                      if (widget.isArrowDown)
+                        FadeEffect(
+                          begin: 1,
+                          end: 0,
+                          duration: Duration(milliseconds: 300),
+                          delay: Duration(milliseconds: index * 100 + 1000), // Start fading in 1 second after the slide
+                        )
+                      else
+                        FadeEffect(
+                          begin: 0,
+                          end: 1,
+                          duration: Duration(milliseconds: 300),
+                          delay: Duration(milliseconds: index * 100 + 1000), // Start fading in 1 second after the slide
+                        ),
+                    ],
+                    child: Text(
+                      languageName,
+                      style: const TextStyle(fontSize: 16, color: Colors.black),
+                    ),
+                  ),
                 ],
-                delay: Duration(milliseconds: 600),
-                child: Text(
-                  languageName,
-                  style: const TextStyle(fontSize: 16, color: Colors.black),
-                ),
               ),
-            ],
-          ),
+            );
+          },
         );
       }).toList(),
     );

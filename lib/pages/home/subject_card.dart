@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter_animate/flutter_animate.dart'; // Import the flutter_animate package
 import 'package:lingoneer_beta_0_0_1/pages/home/subject_card_component.dart';
 
 class SubjectCard extends StatefulWidget {
@@ -78,38 +77,46 @@ class _SubjectCardState extends State<SubjectCard> with SingleTickerProviderStat
 
   @override
   Widget build(BuildContext context) {
-    return PageView.builder(
-      controller: widget.pageController,
-      onPageChanged: widget.onPageChanged,
-      itemCount: widget.subjectsSnapshot.length,
-      itemBuilder: (context, index) {
-        final subject = widget.subjectsSnapshot[index];
-        final title = subject.get('name') as String?;
-        final imageURL = subject.get('image') as String?;
-        final subjectId = subject.get('id') as String;
+    return Padding(
+      padding: const EdgeInsets.only(
+        top: 0, // considering appbar height
+        left: 8,
+        right: 8,
+        bottom: 8,
+      ),
+      child: PageView.builder(
+        controller: widget.pageController,
+        onPageChanged: widget.onPageChanged,
+        itemCount: widget.subjectsSnapshot.length,
+        itemBuilder: (context, index) {
+          final subject = widget.subjectsSnapshot[index];
+          final title = subject.get('name') as String?;
+          final imageURL = subject.get('image') as String?;
+          final subjectId = subject.get('id') as String;
 
-        final countOfSpecificSubject =
-            widget.doneMapcardsIds.where((id) => id == subjectId).length;
-        final cardColor = widget.getSubjectColor(subjectId);
-        final progressValue = countOfSpecificSubject / 32;
+          final countOfSpecificSubject =
+              widget.doneMapcardsIds.where((id) => id == subjectId).length;
+          final cardColor = widget.getSubjectColor(subjectId);
+          final progressValue = countOfSpecificSubject / 32;
 
-        return SlideTransition(
-          position: _slideAnimation,
-          child: SizedBox(
-            width: MediaQuery.of(context).size.width * 0.8, // Set width dynamically
-            child: MyMainCard(
-              title: title ?? 'No Title',
-              imagePath: imageURL ?? 'lib/assets/images/test/pic1.png',
-              progressValue: progressValue,
-              cardColor: cardColor,
-              progressColor: cardColor.withOpacity(0.7),
-              onTap: () {
-                widget.goToSubjectLevel(subjectId);
-              },
+          return SlideTransition(
+            position: _slideAnimation,
+            child: SizedBox(
+              width: MediaQuery.of(context).size.width * 0.8, // Set width dynamically
+              child: MyMainCard(
+                title: title ?? 'No Title',
+                imagePath: imageURL ?? 'lib/assets/images/test/pic1.png',
+                progressValue: progressValue,
+                cardColor: cardColor,
+                progressColor: cardColor.withOpacity(0.7),
+                onTap: () {
+                  widget.goToSubjectLevel(subjectId);
+                },
+              ),
             ),
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 }
